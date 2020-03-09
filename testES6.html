@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="game-wraper">
+    <div id="screen"></div>
+    </div>
+    <style>
+        body {
+            position: relative;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #game-wraper {
+            /* top: 100px;
+            left: 100px; */
+            /* width: 300px;
+            height: 450px; */
+            margin: 0px;
+            padding: 0px;
+            position: relative;
+            border: solid black 5px;
+            /* overflow: hidden; */
+            background-color: rgb(202, 230, 238);
+       
+        }
+
+           
+          
+    </style>    
+    <script>
+        /*
+
+        */
+        
+        
+
+        let blockRadius = 50;
+        let newBlockRadius=50;
+        window.addEventListener(`resize`, event => {
+            console.log(blockRadius*window.innerWidth/1679)
+            newBlockRadius=blockRadius*window.innerWidth/1679
+            viev.updateSizeWorld()
+        // some code
+        }, false);
+        
+
+        function Screen(blockRadius) {
+            let screen = document.getElementById("screen")
+            // screen.style.left = 2 * blockRadius + "px"
+            // screen.style.top = 2 * blockRadius + "px"
+            screen.style.width = "auto";
+            screen.style.height =7* blockRadius + "px"
+            screen.style.transform = "scale(1,1)"
+            screen.style.overflow= "hidden";
+            return screen
+        }
+
+
+            /*
+             *
+             * Audio
+             * 
+             *  
+            */
+
+            
+
+        function AudioClass(a) {
+            let audio = new Audio()
+            audio.src = a;
+            return audio;
+        }
+        //передаю song и запускаю сонг
+        function playAudios(song, obj) {
+
+            function songIsPLay(obj) {
+                setTimeout(() => { model.hash.audio[obj] = false }, 200);
+            }
+            audioArray.forEach(el => {
+                if (el === song) {
+                    song.currentTime = 0;
+                    song.play()
+                        .then(a =>
+                            songIsPLay(obj)).catch(e => songIsPLay(obj))
+                }
+                if (el !== song) {
+                    el.currentTime = 0;
+                    el.pause()
+                }
+            })
+        }
+        let saundtrack = new AudioClass("./song1.mp3");
+        let jumpSong = new AudioClass("./jump.mp3");
+        let pushBlock = new AudioClass("./pushblock.mp3");
+
+        let audioArray = [jumpSong, pushBlock]
+        function audioInit() {
+            saundtrack.play()
+            saundtrack.pause()
+            jumpSong.load()
+            jumpSong.pause()
+            pushBlock.load()
+            pushBlock.pause()
+            audioInit = () => { };
+        }
+
+        /*
+        *---------------------------------------Controller------------------------------    
+        */
+        function MainController() {
+            let model = null
+            let hash = null;
+            this.start = (mainModel) => {
+                model = mainModel;
+                hash = mainModel.hash;
+            }
+            function keyDown(EO) {
+                EO = EO || window.event;
+                key = EO.key;
+                hash[key] = true;
+                audioInit()
+            }
+            function keyup(EO) {
+                EO = EO || window.event;
+                key = EO.key;
+                hash[key] = false;
+            }
+            window.addEventListener("keydown", keyDown)
+            window.addEventListener("keyup", keyup)
+        }
+
+        /*
+        *-----------------------------------------Model--------------------------------
+        */
+        function MainModel() {
+
+            let viev = null;
+            let field = null;
+            let map = [     //1,  2,  3  ,4  ,5  ,6  ,7  ,8   ,9   10,  11  ,12  ,13  ,14  ,15 , 16
+                ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//1   x0,y0
+                ["#", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//2   x0,y0+n*s1
+                ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//3
+                ["#", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//4
+                ["#", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//5
+                ["#", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ", "!"],//6
+                ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"],//7
+            ]
+            let map2 = [     //1,  2,  3  ,4  ,5  ,6  ,7  ,8   ,9   10,  11  ,12  ,13  ,14  ,15 , 16
+                ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//1   x0,y0
+                ["#", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//2   x0,y0+n*s1
+                ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//3
+                ["#", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//4
+                ["#", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//5
+                ["#", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", "#", " ", " ", "2", " ", "2", " ", "2", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ", "!"],//6
+                ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"],//7
+            ]
+            let hash = {//сохранено состояние всего
+                player: {
+                    x0: 50 ,
+                    y0: 200 ,
+                    x: 50  ,
+                    y: 200 ,
+                    width: 50 ,
+                    height: 50,
+                    speedX: 3 ,
+                    speedY: 4 ,
+                    jumpSpeeD: 4,
+                    score: 0,
+                    maxScore: 0,
+                    life: 3,
+                },
+                enemu: {
+                    speed: 1,
+                    timer: 0,
+                    timerMax: 150,
+                },
+                audio: {
+                    saundtrack: false,
+                    jumpSong: false,
+                    pushBlock: false,
+                },
+                a: false,
+                d: false,
+                " ": false,
+                rigth: true,
+                left: false,
+                down: true,
+                jump: false,//находиться в прыжке
+                timer: 0,
+                flyTimer: 10,
+                gameTime: 300,
+                gameRound: 1,
+                roundIsEnd:false,
+
+            }
+            
+            this.start = (mainViev, mainScreen) => {
+                viev = mainViev;
+                field = mainScreen;
+            }
+            function Block(x, y, simbol, width, id) {// Класс блок по которому создают объекты по плану map
+                this.name = simbol;
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = width;
+                this.id = id;
+            }
+            function endGame() {// смерть персонажа
+                alert("Вы Проиграли")
+            }
+            function playerDie() {  // * когда персонаж встречаеться с монстром боковыми гранями персонаж погибает
+                hash.player.x = hash.player.x0;
+                hash.player.y = hash.player.y0;
+                hash.player.life -= 1;
+                setTimeout(viev.update, 1000);
+                if (!hash.player.life) endGame()
+            }
+            function winRound(arr) {// 
+
+                let result = false;
+                for (let j = 0; j < arr.length; j++) {
+                    for (let i = 0; i < arr[j].length; i++) {
+                        let block = arr[j][i]
+                        if (block.name === "!") {
+                            let player = hash.player;
+                            let width = blockRadius;
+                            if (
+                                (block.x > player.x && block.x <= player.x + player.width) &&// по оси x все типтоп
+                                (block.y < player.y + width && block.y + width > player.y)
+
+                            ) {
+                                result = result || true;
+                                let totalCore = hash.player.score + hash.gameTime.current * hash.player.life
+                                hash.gameTime.pause();
+                                hash.roundIsEnd = true;
+                                hash.player.score = totalCore;
+                                // ;
+                                // function NPR(){
+                                //     return new Promise((res,rej)=>{
+                                //          setTimeout(()=>res(),3000)}
+                                //     )}
+                                // NPR()
+                                // .then(res=>{ })
+                                // .then(res=>{ })
+                                newRound()
+                                
+                            }
+
+                        }
+                    }
+                }
+                return result;
+
+            }
+            function endGame(){
+                hash.roundIsEnd=true,
+            alert("Игра окончена вы победили")
+            }
+            function newRound() {//запускает новый раунд
+
+                hash.gameTime = new Timer({ start: 300 * 60, tick: -1, gradient: 60, end: 0, callback: playerDie })
+                hash.gameTime.startTimer();
+                blockGrid = createBlockGreed(map2).greed;  //вся сетка объектов 
+                enemuGrid = createBlockGreed(map2).enemu;    //массив с противниками
+                hash.player.x = hash.player.x0
+                hash.player.y = hash.player.y0
+                hash.gameRound += 1
+                hash.roundIsEnd = false;
+                viev.newRound(blockGrid, enemuGrid);
+                if (hash.gameRound === 3) endGame()
+               
+            }
+
+            function Timer({ start, end, tick, gradient, callback }) {//   Class timer ведет осчет игрового времени
+                /**
+                *    Class timer ведет осчет игрового времени
+                *   @start начальное время
+                *   @end конечное время
+                *   @tick шаг таймера
+                *   @gradient по умолчанию равен 1
+                *   @callback  функция вызываемая вконце таймера
+                */
+                this.start = start;
+                this.end = end;
+                this.current = null;
+                this.tick = tick;
+                this.gradient = 1 || gradient;
+                this.isRun = false;
+                this.count = () => {
+                    if (this.isRun) {
+                        if (this.current !== this.end) this.current += this.tick;
+                        if (this.current <= this.end) endTimer()
+                        // console.log(this.current)
+                    }
+                }
+                function endTimer() {
+                    this.isRun = false;
+                    callback()
+                }
+                this.startTimer = () => {
+                    this.isRun = true;
+                    this.current = this.start;
+                }
+                this.pause = () => this.isRun = false;
+            }
+            function createBlockGreed(arr) { //создает архив состоящий из объектов, в которых описаны координаты объектов игры, названиее этих объектов(блоки, монстры)
+                let greed = []
+                let enemu = []
+                for (let j = 0; j < arr.length; j++) {
+                    let string = []
+                    for (let i = 0; i < arr[j].length; i++) {
+                        let el = arr[j][i]
+                        let x = i * 50;
+                        let y = j * 50;
+                        let id = Number(i + "" + j)
+                        let block = new Block(x, y, el, 50, id);
+                        string.push(block);
+                        if (el === "2" || el === "1") enemu.push(block)
+                    }
+                    greed.push(string)
+                }
+                return { greed, enemu };
+            }
+         
+            hash.gameTime = new Timer({ start: 300 * 60, tick: -1, gradient: 60, end: 0, callback: playerDie })
+            hash.gameTime.startTimer()
+
+
+            let blockGrid = createBlockGreed(map).greed;  //вся сетка объектов 
+            let enemuGrid = createBlockGreed(map).enemu;    //массив с противниками
+            this.blockGrid = blockGrid;
+            this.enemuGrid = enemuGrid;
+            this.hash = hash;
+           
+            this.move = () => {
+                //обрабатывают физику взаимодействия с блоками не обрабатывает столкновение с монстрами
+                function findBlockRight(arr) {
+
+                    let result = false;
+                    for (let j = 0; j < arr.length; j++) {
+                        for (let i = 0; i < arr[j].length; i++) {
+                            let block = arr[j][i]
+                            if (block.name === "#") {
+                                let player = hash.player;
+                                let width = blockRadius;
+                                if (
+                                    (block.x > player.x && block.x <= player.x + player.width) &&// по оси x все типтоп
+                                    (block.y < player.y + width && block.y + width > player.y)
+
+                                ) {
+                                    result = result || true;
+                                    // console.log("Столкновение с блоком", block.id)
+                                }
+
+                            }
+                        }
+                    }
+                    return result;
+                }
+                function findBlockLeft(arr) {
+                    let result = false;
+                    for (let j = 0; j < arr.length; j++) {
+                        for (let i = 0; i < arr[j].length; i++) {
+                            let block = arr[j][i]
+                            if (block.name === "#") {
+                                let player = hash.player;
+                                let width = blockRadius;
+                                if (
+                                    (block.x + width >= player.x && block.x + width < player.x + player.width) &&// по оси x все типтоп
+                                    (block.y < player.y + player.height && block.y + width > player.y)
+
+                                ) {
+                                    result = result || true;
+                                    // console.log("Столкновение с блоком", block.id)
+                                }
+
+                            }
+                        }
+                    }
+                    return result;
+                }
+                function findBlockDown(arr) {
+                    let result = false;
+                    for (let j = 0; j < arr.length; j++) {
+                        for (let i = 0; i < arr[j].length; i++) {
+                            let block = arr[j][i]
+                            if (block.name === "#") {
+                                let player = hash.player;
+                                let width = blockRadius;
+                                if (
+                                    (block.y > player.y && block.y <= player.y + player.height) &&// по оси x все типтоп
+                                    (block.x < player.x + player.width * 0.9 && block.x + width > player.x + player.width * 0.1)
+
+                                ) {
+                                    hash.player.y = block.y - width
+                                    result = result || true;
+                                    // console.log("Упал на блок с блоком", block.id)
+
+                                }
+
+                            }
+
+                        }
+                    }
+                    return result;
+                }
+                function findBlockUp(arr) {
+                    let result = false;
+                    for (let j = 0; j < arr.length; j++) {
+                        for (let i = 0; i < arr[j].length; i++) {
+                            let block = arr[j][i]
+                            if (block.name === "#") {
+                                let player = hash.player;
+                                let width = blockRadius;
+                                if (
+                                    (block.y + width >= player.y && block.y + width < player.y + player.height) &&// по оси x все типтоп
+                                    (block.x < player.x + player.width && block.x + width > player.x)
+
+                                ) {
+                                    result = result || true;
+                                    //console.log("Ударился о блок на блок с блоком", block.id)
+                                    if (!hash.audio.pushBlock) { playAudios(pushBlock, "pushBlock"); hash.audio.pushBlock = true };
+                                    hash.player.y = block.y + width
+                                }
+
+                            }
+                        }
+                    }
+                    return result;
+                }
+                /**********************************************************************************************/
+
+
+                //обрабатывают физику взаимодействия с монстрами не обрабатывает столкновение с блоками 
+                function findMonstrDown(arr) {
+                    let result = false;
+                    for (let i = 0; i < arr.length; i++) {
+                        let block = arr[i]
+                        if (block.name === "1" || block.name === "2") {
+                            let player = hash.player;
+                            let width = blockRadius;
+                            if (
+                                (player.y <= block.y && block.y < player.y + player.height) &&// по оси x все типтоп
+                                (block.x < player.x + player.width / 2 && block.x + width > player.x + player.width / 4)
+
+                            ) { console.log("нашел монстра c низку"); PlayerKiilMonster(block.id) }
+                        }
+                    }
+                    return result;
+                }
+                function findMonstrRight(arr) {
+                    let result = false;
+                    for (let i = 0; i < arr.length; i++) {
+                        let block = arr[i]
+                        if (block.name === "1" || block.name === "2") {
+                            let player = hash.player;
+                            let width = blockRadius;
+                            if (
+                                (block.x > player.x && block.x < player.x + player.width) &&// по оси x все типтоп
+                                (block.y + width * 2 / 3 <= player.y + width && block.y + width > player.y)
+
+                            ) {
+                                playerDie()
+                                console.log("Нашел монстра справа")
+                            }
+
+                        }
+                    }
+                    return result;
+                }
+                function findMonstrLeft(arr) {
+                    let result = false;
+                    for (let i = 0; i < arr.length; i++) {
+                        let block = arr[i]
+                        if (block.name === "1" || block.name === "2") {
+                            let player = hash.player;
+                            let width = blockRadius;
+                            if (
+                                (block.x + width > player.x && block.x + width < player.x + player.width) &&// по оси x все типтоп
+                                (block.y + width * 2 / 3 <= player.y + width && block.y + width > player.y)
+
+
+                            ) {
+                                playerDie()
+                                console.log("Нашел монстра слева")
+                            }
+
+                        }
+                    }
+                    return result;
+                }
+                function PlayerKiilMonster(ID) {//убили монстра
+                    /**
+                    * когда персонаж падает на монстра запускается функция PlayerKiilMonster  и в ней можно изменить события которые происходят с персонажем
+                    * в данный момент эта функция удаляет монстра и вызывает маленький прыжок у персонажа
+                    * так же она вызвает метод viev который заставляет удалить монстра из отображения
+                   
+                    * найти противника в базе по ID 
+                    удалить противника из базы
+                    вызвать прыжок у игрока но с меньшей энегией 
+                    */
+
+                    if (hash.player.maxScore < hash.player.score) hash.player.maxScore = hash.player.score;
+                    console.log(hash.player.score)
+
+                    for (let i = 0; i < enemuGrid.length; i++) {
+                        let enemu = enemuGrid[i]
+                        if (enemu.id === ID) {
+                            enemuGrid.splice(i, 1);
+                            hash.flyTimer = 7;
+                            jump();
+                            // console.log("ID=", ID)
+                            // console.log(enemuGrid)
+
+
+                            viev.killMONSTRS(ID)
+                        }
+                    }
+                    hash.player.score += 200;
+                }
+            
+                function animationEnemu(arr) { //анимация противников 
+                /**
+                   * 
+                   *        //анимация противников 
+                   физика движения монстров движения монстров
+                  */
+
+                    findMonstrDown(enemuGrid);
+                    findMonstrRight(enemuGrid);
+                    findMonstrLeft(enemuGrid);
+                    viev.updateEnemu(enemuGrid);
+                    hash.enemu.timer += 1
+                    for (let i = 0; i < arr.length; i++) {
+                        let enemu = arr[i];
+                        enemu.x += hash.enemu.speed;
+                    }
+                    if (hash.enemu.timer === hash.enemu.timerMax) { hash.enemu.speed = -hash.enemu.speed; hash.enemu.timer = 0 };
+                }
+               
+                //движение главного героя
+                function moveRight() {
+                    console.log(hash.player.x,hash.player.y,)
+                    viev.update();
+                    hash.rigth = true;
+                    hash.left = false;
+                    //вовремя движения идет проверка есть ли земля под ногам
+                    if (!findBlockDown(blockGrid)) { hash.down = true; hash.jump = true; }
+                    if (!findBlockRight(blockGrid)) hash.player.x += hash.player.speedX;
+
+
+                }
+                function moveLeft() {
+                    viev.update();
+                    hash.left = true;
+                    hash.rigth = false;
+
+                    //вовремя движения идет проверка есть ли земля под ногам
+                    if (!findBlockDown(blockGrid)) { hash.down = true; hash.jump = true; }
+                    if (!findBlockLeft(blockGrid)) hash.player.x -= hash.player.speedX;
+                }
+                function moveDown() {
+                    console.log(hash.player.x,hash.player.y,)
+                    viev.update();
+                    if (findBlockDown(blockGrid)) {
+                         hash.down = false;
+                         hash.jump = false;
+                         hash.player.jumpSpeeD = hash.player.speedY }
+                    else {
+                        hash.down = true;
+                        hash.player.y += hash.player.speedY;
+                    }
+                }
+                function jump() {
+                    console.log(hash.player.x,hash.player.y,)
+                    if (!hash.audio.jumpSong) {
+                        playAudios(jumpSong, "jumpSong");
+                        hash.audio.jumpSong = true };
+                    viev.update();
+                    hash.jump = true;
+                    hash.down = true;
+                    if (findBlockUp(blockGrid)) { hash.player.jumpSpeeD = 0; }
+                    hash.player.y -= hash.player.jumpSpeeD * hash.flyTimer;
+                    if (hash.flyTimer > 0) window.requestAnimationFrame(jump)
+                    hash.flyTimer -= 1;
+                    if (hash.flyTimer === -1) hash.flyTimer = 10;
+                }
+                //введение
+                //таймер и всё что с ним
+              
+            
+                hash.timer += 1;
+                hash.gameTime.count();
+                animationEnemu(enemuGrid)
+                if (hash.d) moveRight()
+                if (hash.a) moveLeft()
+                if (hash.down) moveDown()
+                if (hash.timer > 30) hash.timer = 1;
+                if (hash[" "] && !hash.jump && hash.flyTimer === 10) jump()
+              
+                if(!hash.roundIsEnd) window.requestAnimationFrame(move)
+                if(!hash.roundIsEnd) winRound(blockGrid)
+            }
+            let move = this.move.bind(this)
+            window.requestAnimationFrame(() => this.move())
+        }
+        /*
+        *--------------------------------------------Viev-------------------------------
+        */
+        function MainViev() {
+            this.model = null;         // с какой моделью работаем
+            this.myField = null;       // внутри какого элемента DOM наша вёрстка
+
+            // костыли которые произогли при переходе на архитектуру MVC
+                blockGrid = model.blockGrid;
+                enemuGrid = model.enemuGrid;
+
+            let hash = model.hash
+
+
+            this.start = (mainModel, mainScreen) => { //связывает состояние модели с отображением 
+                this.model = mainModel;
+                this.myField = mainScreen;
+            }
+
+            function Player(hash) {    //*  class PLayer дает доступ к характеристикам и управлению игроком
+                let r = blockRadius / 50;
+                let src = "./mario2_2.svg"
+                let div = document.createElement("div");
+                div.style.backgroundImage = `url('${src}') `
+                div.style.position = "absolute";
+                div.style.width =hash.player.width+ "px";
+                div.style.height = hash.player.height + "px";
+                div.style.top = hash.player.y* blockRadius / 50 + "px"
+                div.style.left = hash.player.y* blockRadius / 50 + "px"
+                div.id="Player";
+                div.style.zIndex = 0;
+                div.style.border="solid black 1px"
+                div.style.backgroundSize="300% 100%"
+                div.style.backgroundPositionX="-0px"
+                div.style.transform = "translateZ(0)"
+                div.style.backgroundRepeat="no-repeat"
+                screen.append(div);
+                return div;
+            }
+            let div = new Player(hash)
+            
+            function createSVGElement(el) { // создает SVG элементы дом по карте
+                    let div = document.createElement("div");
+                    div.style.left = el.x + "px";
+                    div.style.top = el.y + "px";
+                    div.style.position = "absolute";
+                    div.id = el.id;
+                    div.style.width = newBlockRadius + "px";
+                    div.style.height = newBlockRadius + "px";
+                if (el.name === "#") {
+                    div.style.backgroundImage = "url(./wall.svg)"
+                    div.style.backgroundSize="cover"
+                    div.className = "wall";
+                    div.style.transform = "translateZ(0)"
+                    return div;
+                }
+                if (el.name === "2") {
+                    div.style.backgroundImage = "url(./duck2.svg)"
+                    div.style.zIndex = 0;
+                    div.style.border="solid black 1px"
+                    div.style.backgroundSize=`${1150}% ${780}%`
+                    div.style.backgroundPositionX="-100px"
+                    div.style.transform = "translateZ(0)"
+                    div.style.backgroundRepeat="no-repeat"
+                   // div.style.backgroundSize=1150*blockRadius/100+"px"
+                   
+                    return div;
+                }
+           
+                if (el.name === "!") {
+                    div.className = "Finish";
+                    div.style.backgroundColor = "brown";
+                    return div;
+                }
+            }
+            function createDomElement(el) {   // создает элементы дом по карте
+
+                // #-стена
+                // 2-утка
+                // 1-колобок
+                let div = document.createElement("div")
+                div.style.left = el.x + "px";
+                div.style.top = el.y + "px";
+                div.style.position = "absolute";
+                div.id = el.id;
+                div.style.border = "black solid 1px"
+                div.style.width = el.width + "px";
+                div.style.height = el.height + "px";
+                if (el.name === "#") {
+                    div.className = "wall";
+                    div.style.backgroundColor = "red";
+                }
+                if (el.name === "2") {
+                    div.className = "duck";
+                    div.style.backgroundColor = "yellow";
+                }
+                if (el.name === "1") {
+                    div.className = "roll";
+                    div.style.backgroundColor = "blue";
+                }
+                if (el.name === "!") {
+                    div.className = "Finish";
+                    div.style.backgroundColor = "brown";
+                }
+                return div;
+            }
+            function drawblockGrid(arr, pointEnter) { //отрисовываю игровой мир с блоками и монстрами
+                let screen = pointEnter;
+                let gameObjecktArray=[]
+                for (let j = 0; j < arr.length; j++) {
+                    for (let i = 0; i < arr[j].length; i++) {
+                        let el = arr[j][i]
+                        // if (el.name!=="#"){let div = createDomElement(el);}
+                        let div = createSVGElement(el);
+                        if (div) {
+                            screen.appendChild(div);
+                            gameObjecktArray.push(el)
+                            }
+                    }
+                }
+                return gameObjecktArray;
+            }
+            let gameObjecktArray=drawblockGrid(blockGrid, screen);//архив с domЭлементами всех объектов игры
+            
+            
+            function updateObjecktAfterResize(arr){
+                for (let j = 0; j < arr.length; j++) {
+                    let array =arr[j];
+                        let el = arr[j]
+                        let div = document.getElementById(el.id);
+                            console.log(el)
+                            div.style.left = el.x*newBlockRadius/blockRadius + "px";
+                            console.log(el)
+                            div.style.top = el.y*newBlockRadius/blockRadius + "px";
+                            div.style.position = "absolute";
+                            div.id = el.id;
+                            div.style.width = newBlockRadius + "px";
+                            div.style.height = newBlockRadius + "px";
+                        if (el.name === "#") {
+                            div.style.backgroundImage = "url(./wall.svg)"
+                            div.style.backgroundSize="100%"
+                            div.className = "wall";
+                            div.style.transform = "translateZ(0)"
+                           
+                        }
+                        if (el.name === "2") {
+                            div.style.backgroundImage = "url(./duck2.svg)"
+                            // div.style.backgroundSize=1150*blockRadius/110+"px"
+                        }
+                        if (el.name === "!") {
+                            div.className = "Finish";
+                            div.style.backgroundColor = "brown";
+                       
+                        }
+                        screen.style.width = "auto";
+                        screen.style.height =7* newBlockRadius + "px"
+                        screen.style.overflow= "hidden";
+
+                        let pl = document.getElementById("Player")
+                            pl.style.width = hash.player.width* newBlockRadius / blockRadius+ "px";
+                            pl.style.height =hash.player.height* newBlockRadius / blockRadius + "px";
+                            pl.style.top =      hash.player.y* newBlockRadius / blockRadius + "px"
+                            pl.style.left =     hash.player.x* newBlockRadius / blockRadius + "px"
+
+
+
+                } 
+            }
+            this.updateSizeWorld=()=>{
+                updateObjecktAfterResize(gameObjecktArray)
+                }
+            function AnumateMONSTRS(arr) {// функция которая занимается анимацие монстров
+
+                for (let i = 0; i < arr.length; i++) {
+                    let monstr = document.getElementById(arr[i].id)
+                        monstr.style.left = arr[i].x*newBlockRadius/blockRadius + "px"
+                    if (model.hash.enemu.timer%30<30&&model.hash.enemu.timer%30>0) monstr.style.backgroundPositionX = `${-50*newBlockRadius/blockRadius}px`
+                    if (model.hash.enemu.timer%60<60&&model.hash.enemu.timer%60>30) monstr.style.backgroundPositionX = `${-100*newBlockRadius/blockRadius}px`
+                    //if(model.hash.enemu.timer%40===0)monstr.style.backgroundPositionX=`${-50}px`
+                }
+            }
+            /**
+             * метод который убиарет убитых монстров
+             * @id id номер монстра в бом элементе
+             */
+            this.killMONSTRS = (ID) => {
+                this.myField.removeChild(document.getElementById(ID));
+            }
+
+            this.playerDie = () => {// метод который отрисовывает смерть игрока
+                this.update()
+            }
+
+            /**
+             * функция которая перемещает экран за пер
+             */
+            function scrollScreen() {
+
+            }/*
+            * анимация главного героя   ]
+              // анимация персонажа в блоке
+            */
+            function marioAnimation() {
+                // анимация персонажа в блоке
+                if (hash.timer === 00 && hash.jump === false) {
+                    return `${-0*newBlockRadius/blockRadius}px`
+                }
+                 if (hash.timer === 5 && hash.jump === false) {
+                    return `${-100*newBlockRadius/blockRadius}px`
+                }
+                if (hash.timer === 10 && hash.jump === false) {
+                    return `${-50*newBlockRadius/blockRadius}px`
+                }
+                if (hash.timer === 15 && hash.jump === false) {
+                    return `${-0*newBlockRadius/blockRadius}px`
+                }
+                if (hash.timer === 20 && hash.jump === false) {
+                    return `${-100*newBlockRadius/blockRadius}px`
+                }
+            }
+            //метод который заставляет обновляться вью
+
+            //его вызывает модель каждый раз когда обновляеться 
+
+            function documentLoad() {
+                return new Promise((a, b) => { window.onload = () => a() });
+            }
+            function Tablo(left) {
+                let tablo = document.createElement("div");
+                    tablo.style.width = 2 * newBlockRadius + "px";
+                    tablo.style.height = "20px";
+                    tablo.style.left = 2 * newBlockRadius + left + "px";
+                    tablo.style.position = "absolute";
+                    //    tablo.style.backgroundColor="red";
+                    //    tablo.style.border="black solid 1px";
+                    tablo.style.top =  5 + "px";
+
+                return tablo
+            }
+            let URLS={
+                1:"./left.svg",
+                2:"./right.svg",
+                3:"./Jump.svg",
+            }
+            function Button(left,url){
+                let tablo = document.createElement("div");
+                    tablo.style.width = 2 * blockRadius + "px";
+                    tablo.style.backgroundImage =URLS[url];
+                    tablo.style.height = "20px";
+                    tablo.style.left = 2 * blockRadius + left + "px";
+                    tablo.style.top = 6 * blockRadius +  "px";
+                    tablo.style.position = "absolute";
+                //    tablo.style.backgroundColor="red";
+                //    tablo.style.border="black solid 1px";
+                tablo.style.top =  5 + "px";
+                return tablo
+
+            }
+            let timerTablo = new Tablo(70);
+            let lifeTablo  = new Tablo(180);
+            let scoreTablo = new Tablo(290);
+            let countRound = new Tablo(400);
+            let leftBut    = new Button(100,1)
+            // console.log(leftBut)
+            function updateTimeScoreLife(timer, life, score, round) {
+                timerTablo.textContent = "Time: " + Number.parseInt(timer / 100);
+                lifeTablo.textContent = "Life: " + life;
+                scoreTablo.textContent = score;
+                countRound.textContent = "Round: " + round;
+            }
+            let wrapper=document.getElementById("game-wraper")
+            documentLoad()
+                .then(e => wrapper.appendChild(timerTablo))
+                .then(e => wrapper.appendChild(lifeTablo))
+                .then(e => wrapper.appendChild(scoreTablo))
+                .then(e => wrapper.appendChild(countRound))
+                .then(e => wrapper.appendChild(leftBut))
+                .then(e => updateTimeScoreLife(100, 100, 100))
+
+
+            this.update = () => {
+                div.style.backgroundPositionX = marioAnimation()
+                if (!hash.rigth && hash.d) div.style.transform = "scaleX(1)"
+                if (!hash.left && hash.a) div.style.transform = "scaleX(-1)"
+                if (hash.jump === true) div.style.backgroundPositionX = `${-50*newBlockRadius/blockRadius}px`
+                if (hash.down === true) div.style.backgroundPositionX = `${-50*newBlockRadius/blockRadius}px`
+                    div.style.left = hash.player.x*newBlockRadius/blockRadius + "px";
+                    div.style.top = hash.player.y*newBlockRadius/blockRadius + "px";
+                this.myField.scrollLeft = hash.player.x*newBlockRadius/blockRadius - 300
+            }
+            this.updateEnemu = (enemuGrid) => {
+                updateTimeScoreLife(
+                 this.model.hash.gameTime.current,
+                 this.model.hash.player.life,
+                 this.model.hash.player.score,
+                 this.model.hash.gameRound)
+                AnumateMONSTRS(enemuGrid)
+            }
+            this.newRound=(blockGrid,enemuGrid)=>{
+                drawblockGrid(blockGrid, screen)
+                AnumateMONSTRS(enemuGrid)
+            }
+        }
+
+        let screen = new Screen(blockRadius);
+        let model = new MainModel()
+        let viev = new MainViev();
+        let controller = new MainController();
+        controller.start(model);
+        viev.start(model, screen);
+        model.start(viev, screen)
+
+
+
+    </script>
+
+
+</body>
+
+</html>
