@@ -35,21 +35,30 @@
 
            
           
-    </style>
+    </style>    
     <script>
         /*
 
         */
-    
+        
+        
 
-        let blockRadius =100;
+        let blockRadius = 50;
+        let newBlockRadius=50;
+        window.addEventListener(`resize`, event => {
+            console.log(blockRadius*window.innerWidth/1679)
+            newBlockRadius=blockRadius*window.innerWidth/1679
+            viev.updateSizeWorld()
+        // some code
+        }, false);
+        
 
         function Screen(blockRadius) {
             let screen = document.getElementById("screen")
             // screen.style.left = 2 * blockRadius + "px"
             // screen.style.top = 2 * blockRadius + "px"
             screen.style.width = "auto";
-            screen.style.height = 3.5 * 2 * blockRadius + "px"
+            screen.style.height =7* blockRadius + "px"
             screen.style.transform = "scale(1,1)"
             screen.style.overflow= "hidden";
             return screen
@@ -70,8 +79,6 @@
             audio.src = a;
             return audio;
         }
-
-
         //передаю song и запускаю сонг
         function playAudios(song, obj) {
 
@@ -158,15 +165,15 @@
             ]
             let hash = {//сохранено состояние всего
                 player: {
-                    x0: 50 * blockRadius / 50,
-                    y0: 200 * blockRadius / 50,
-                    x: 50 * blockRadius / 50,
-                    y: 200 * blockRadius / 50,
-                    width: 30 * blockRadius / 50,
-                    height: 50 * blockRadius / 50,
-                    speedX: 3 * blockRadius / 50,
-                    speedY: 4 * blockRadius / 50,
-                    jumpSpeeD: 4 * blockRadius / 50,
+                    x0: 50 ,
+                    y0: 200 ,
+                    x: 50  ,
+                    y: 200 ,
+                    width: 50 ,
+                    height: 50,
+                    speedX: 3 ,
+                    speedY: 4 ,
+                    jumpSpeeD: 4,
                     score: 0,
                     maxScore: 0,
                     life: 3,
@@ -218,7 +225,7 @@
                 setTimeout(viev.update, 1000);
                 if (!hash.player.life) endGame()
             }
-            function winRound(arr) {
+            function winRound(arr) {// 
 
                 let result = false;
                 for (let j = 0; j < arr.length; j++) {
@@ -257,20 +264,21 @@
             }
             function endGame(){
                 hash.roundIsEnd=true,
-            alert("Игра окончена вы")
+            alert("Игра окончена вы победили")
             }
             function newRound() {//запускает новый раунд
 
                 hash.gameTime = new Timer({ start: 300 * 60, tick: -1, gradient: 60, end: 0, callback: playerDie })
                 hash.gameTime.startTimer();
+                
                 blockGrid = createBlockGreed(map2).greed;  //вся сетка объектов 
                 enemuGrid = createBlockGreed(map2).enemu;    //массив с противниками
                 hash.player.x = hash.player.x0
                 hash.player.y = hash.player.y0
                 hash.gameRound += 1
                 hash.roundIsEnd = false;
-                viev.newRound(blockGrid,enemuGrid);
-                if(hash.gameRound===3) endGame()
+                viev.newRound(blockGrid, enemuGrid);
+                if (hash.gameRound === 3) endGame()
                
             }
 
@@ -309,15 +317,14 @@
             function createBlockGreed(arr) { //создает архив состоящий из объектов, в которых описаны координаты объектов игры, названиее этих объектов(блоки, монстры)
                 let greed = []
                 let enemu = []
-                let blockGrid = 50;
                 for (let j = 0; j < arr.length; j++) {
                     let string = []
                     for (let i = 0; i < arr[j].length; i++) {
                         let el = arr[j][i]
-                        let x = i * blockRadius;
-                        let y = j * blockRadius;
+                        let x = i * 50;
+                        let y = j * 50;
                         let id = Number(i + "" + j)
-                        let block = new Block(x, y, el, blockRadius, id);
+                        let block = new Block(x, y, el, 50, id);
                         string.push(block);
                         if (el === "2" || el === "1") enemu.push(block)
                     }
@@ -544,6 +551,7 @@
                
                 //движение главного героя
                 function moveRight() {
+                    console.log(hash.player.x,hash.player.y,)
                     viev.update();
                     hash.rigth = true;
                     hash.left = false;
@@ -563,6 +571,7 @@
                     if (!findBlockLeft(blockGrid)) hash.player.x -= hash.player.speedX;
                 }
                 function moveDown() {
+                    console.log(hash.player.x,hash.player.y,)
                     viev.update();
                     if (findBlockDown(blockGrid)) {
                          hash.down = false;
@@ -574,6 +583,7 @@
                     }
                 }
                 function jump() {
+                    console.log(hash.player.x,hash.player.y,)
                     if (!hash.audio.jumpSong) {
                         playAudios(jumpSong, "jumpSong");
                         hash.audio.jumpSong = true };
@@ -588,6 +598,7 @@
                 }
                 //введение
                 //таймер и всё что с ним
+              
             
                 hash.timer += 1;
                 hash.gameTime.count();
@@ -625,29 +636,34 @@
 
             function Player(hash) {    //*  class PLayer дает доступ к характеристикам и управлению игроком
                 let r = blockRadius / 50;
-                let src = "https://lamcdn.net/lookatme.ru/post_image-image/QxdAuetaqlpd9XPW1Adn-Q-wide.png"
+                let src = "./mario2_2.svg"
                 let div = document.createElement("div");
+                div.style.backgroundImage = `url('${src}') `
                 div.style.position = "absolute";
-                div.style.top = hash.player.y + "px"
-                div.style.left = hash.player.y + "px"
-                div.style.width = hash.player.width + "px";
-                div.style.zIndex = 0;
+                div.style.width =hash.player.width+ "px";
                 div.style.height = hash.player.height + "px";
-                div.style.backgroundImage = `url('${src}')`
-                div.style.backgroundPositionX = `${-90 * r}px`
-                div.style.backgroundPositionY = `${11 * r}px`
+                div.style.top = hash.player.y* blockRadius / 50 + "px"
+                div.style.left = hash.player.y* blockRadius / 50 + "px"
+                div.id="Player";
+                div.style.zIndex = 0;
+                div.style.border="solid black 1px"
+                div.style.backgroundSize="300% 100%"
+                div.style.backgroundPositionX="-0px"
+                div.style.transform = "translateZ(0)"
+                div.style.backgroundRepeat="no-repeat"
                 screen.append(div);
                 return div;
             }
             let div = new Player(hash)
+            
             function createSVGElement(el) { // создает SVG элементы дом по карте
                     let div = document.createElement("div");
                     div.style.left = el.x + "px";
                     div.style.top = el.y + "px";
                     div.style.position = "absolute";
                     div.id = el.id;
-                    div.style.width = blockRadius + "px";
-                    div.style.height = blockRadius + "px";
+                    div.style.width = newBlockRadius + "px";
+                    div.style.height = newBlockRadius + "px";
                 if (el.name === "#") {
                     div.style.backgroundImage = "url(./wall.svg)"
                     div.style.backgroundSize="cover"
@@ -657,17 +673,17 @@
                 }
                 if (el.name === "2") {
                     div.style.backgroundImage = "url(./duck2.svg)"
-                    div.style.backgroundSize=1150*blockRadius/100+"px"
-                    div.className = "duck";
+                    div.style.zIndex = 0;
+                    div.style.border="solid black 1px"
+                    div.style.backgroundSize=`${1150}% ${780}%`
+                    div.style.backgroundPositionX="-100px"
                     div.style.transform = "translateZ(0)"
+                    div.style.backgroundRepeat="no-repeat"
+                   // div.style.backgroundSize=1150*blockRadius/100+"px"
+                   
                     return div;
                 }
-                if (el.name === "1") {
-                    div.className = "roll";
-                    div.style.backgroundColor = "blue";
-                    div.style.transform = "translateZ(0)"
-                    return div;
-                }
+           
                 if (el.name === "!") {
                     div.className = "Finish";
                     div.style.backgroundColor = "brown";
@@ -707,24 +723,76 @@
             }
             function drawblockGrid(arr, pointEnter) { //отрисовываю игровой мир с блоками и монстрами
                 let screen = pointEnter;
+                let gameObjecktArray=[]
                 for (let j = 0; j < arr.length; j++) {
                     for (let i = 0; i < arr[j].length; i++) {
                         let el = arr[j][i]
                         // if (el.name!=="#"){let div = createDomElement(el);}
                         let div = createSVGElement(el);
-                        if (div) screen.appendChild(div);
+                        if (div) {
+                            screen.appendChild(div);
+                            gameObjecktArray.push(el)
+                            }
                     }
                 }
+                return gameObjecktArray;
             }
-                     drawblockGrid(blockGrid, screen);
+            let gameObjecktArray=drawblockGrid(blockGrid, screen);//архив с domЭлементами всех объектов игры
+            
+            
+            function updateObjecktAfterResize(arr){
+                for (let j = 0; j < arr.length; j++) {
+                    let array =arr[j];
+                        let el = arr[j]
+                        let div = document.getElementById(el.id);
+                            console.log(el)
+                            div.style.left = el.x*newBlockRadius/blockRadius + "px";
+                            console.log(el)
+                            div.style.top = el.y*newBlockRadius/blockRadius + "px";
+                            div.style.position = "absolute";
+                            div.id = el.id;
+                            div.style.width = newBlockRadius + "px";
+                            div.style.height = newBlockRadius + "px";
+                        if (el.name === "#") {
+                            div.style.backgroundImage = "url(./wall.svg)"
+                            div.style.backgroundSize="100%"
+                            div.className = "wall";
+                            div.style.transform = "translateZ(0)"
+                           
+                        }
+                        if (el.name === "2") {
+                            div.style.backgroundImage = "url(./duck2.svg)"
+                            // div.style.backgroundSize=1150*blockRadius/110+"px"
+                        }
+                        if (el.name === "!") {
+                            div.className = "Finish";
+                            div.style.backgroundColor = "brown";
+                       
+                        }
+                        screen.style.width = "auto";
+                        screen.style.height =7* newBlockRadius + "px"
+                        screen.style.overflow= "hidden";
 
+                        let pl = document.getElementById("Player")
+                            pl.style.width = hash.player.width* newBlockRadius / blockRadius+ "px";
+                            pl.style.height =hash.player.height* newBlockRadius / blockRadius + "px";
+                            pl.style.top =      hash.player.y* newBlockRadius / blockRadius + "px"
+                            pl.style.left =     hash.player.x* newBlockRadius / blockRadius + "px"
+
+
+
+                } 
+            }
+            this.updateSizeWorld=()=>{
+                updateObjecktAfterResize(gameObjecktArray)
+                }
             function AnumateMONSTRS(arr) {// функция которая занимается анимацие монстров
 
                 for (let i = 0; i < arr.length; i++) {
                     let monstr = document.getElementById(arr[i].id)
-                        monstr.style.left = arr[i].x + "px"
-                    if (model.hash.enemu.timer%30<30&&model.hash.enemu.timer%30>0) monstr.style.backgroundPositionX = `${-blockRadius}px`
-                    if (model.hash.enemu.timer%60<60&&model.hash.enemu.timer%60>30) monstr.style.backgroundPositionX = `${-blockRadius*2.05}px`
+                        monstr.style.left = arr[i].x*newBlockRadius/blockRadius + "px"
+                    if (model.hash.enemu.timer%30<30&&model.hash.enemu.timer%30>0) monstr.style.backgroundPositionX = `${-50*newBlockRadius/blockRadius}px`
+                    if (model.hash.enemu.timer%60<60&&model.hash.enemu.timer%60>30) monstr.style.backgroundPositionX = `${-100*newBlockRadius/blockRadius}px`
                     //if(model.hash.enemu.timer%40===0)monstr.style.backgroundPositionX=`${-50}px`
                 }
             }
@@ -752,19 +820,19 @@
             function marioAnimation() {
                 // анимация персонажа в блоке
                 if (hash.timer === 00 && hash.jump === false) {
-                    return `${-60}px`
+                    return `${-0*newBlockRadius/blockRadius}px`
                 }
-                if (hash.timer === 7 && hash.jump === false) {
-                    return `${-90}px`
+                 if (hash.timer === 5 && hash.jump === false) {
+                    return `${-100*newBlockRadius/blockRadius}px`
                 }
-                if (hash.timer === 14 && hash.jump === false) {
-                    return `${-120}px`
+                if (hash.timer === 10 && hash.jump === false) {
+                    return `${-50*newBlockRadius/blockRadius}px`
                 }
-                if (hash.timer === 21 && hash.jump === false) {
-                    return `${-160}px`
+                if (hash.timer === 15 && hash.jump === false) {
+                    return `${-0*newBlockRadius/blockRadius}px`
                 }
-                if (hash.timer === 28 && hash.jump === false) {
-                    return `${-120}px`
+                if (hash.timer === 20 && hash.jump === false) {
+                    return `${-100*newBlockRadius/blockRadius}px`
                 }
             }
             //метод который заставляет обновляться вью
@@ -776,13 +844,13 @@
             }
             function Tablo(left) {
                 let tablo = document.createElement("div");
-                tablo.style.width = 2 * blockRadius + "px";
-                tablo.style.height = "20px";
-                tablo.style.left = 2 * blockRadius + left + "px";
-                tablo.style.position = "absolute";
-                //    tablo.style.backgroundColor="red";
-                //    tablo.style.border="black solid 1px";
-                tablo.style.top =  5 + "px";
+                    tablo.style.width = 2 * newBlockRadius + "px";
+                    tablo.style.height = "20px";
+                    tablo.style.left = 2 * newBlockRadius + left + "px";
+                    tablo.style.position = "absolute";
+                    //    tablo.style.backgroundColor="red";
+                    //    tablo.style.border="black solid 1px";
+                    tablo.style.top =  5 + "px";
 
                 return tablo
             }
@@ -810,7 +878,7 @@
             let scoreTablo = new Tablo(290);
             let countRound = new Tablo(400);
             let leftBut    = new Button(100,1)
-console.log(leftBut)
+            // console.log(leftBut)
             function updateTimeScoreLife(timer, life, score, round) {
                 timerTablo.textContent = "Time: " + Number.parseInt(timer / 100);
                 lifeTablo.textContent = "Life: " + life;
@@ -829,21 +897,26 @@ console.log(leftBut)
 
             this.update = () => {
                 div.style.backgroundPositionX = marioAnimation()
-                if (!hash.rigth && hash.d) div.style.transform += "scaleX(-1)"
-                if (!hash.left && hash.a) div.style.transform += "scaleX(-1)"
-                if (hash.jump === true) div.style.backgroundPositionX = `${-203}px`
-                if (hash.down === true) div.style.backgroundPositionX = `${-203}px`
-                div.style.left = hash.player.x + "px";
-                div.style.top = hash.player.y + "px";
-                this.myField.scrollLeft = hash.player.x - 300
+                if (!hash.rigth && hash.d) div.style.transform = "scaleX(1)"
+                if (!hash.left && hash.a) div.style.transform = "scaleX(-1)"
+                if (hash.jump === true) div.style.backgroundPositionX = `${-50*newBlockRadius/blockRadius}px`
+                if (hash.down === true) div.style.backgroundPositionX = `${-50*newBlockRadius/blockRadius}px`
+                    div.style.left = hash.player.x*newBlockRadius/blockRadius + "px";
+                    div.style.top = hash.player.y*newBlockRadius/blockRadius + "px";
+                this.myField.scrollLeft = hash.player.x*newBlockRadius/blockRadius - 300
             }
             this.updateEnemu = (enemuGrid) => {
-                updateTimeScoreLife(this.model.hash.gameTime.current,
+                updateTimeScoreLife(
+                 this.model.hash.gameTime.current,
                  this.model.hash.player.life,
                  this.model.hash.player.score,
                  this.model.hash.gameRound)
                 AnumateMONSTRS(enemuGrid)
             }
+            this.clearRound={
+                
+            }
+
             this.newRound=(blockGrid,enemuGrid)=>{
                 drawblockGrid(blockGrid, screen)
                 AnumateMONSTRS(enemuGrid)
