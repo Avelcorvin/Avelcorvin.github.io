@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
@@ -50,6 +52,7 @@
         let blockRadius = 50;
         let newBlockRadius=50;
         window.addEventListener(`resize`, event => {
+            window.client
             console.log(blockRadius*window.innerWidth/1679)
             newBlockRadius=Number.parseInt(blockRadius*window.innerWidth/1679)
             viev.updateSizeWorld()
@@ -141,8 +144,14 @@
                 key = a||EO.key;
                 hash[key] = false;
             }
+            function touch(EO){
+                EO = EO || window.event;
+                EO.preventDefault()
+                console.log(EO)
+            }
             window.addEventListener("keydown", keyDown,false)
             window.addEventListener("keyup", keyup,false)
+            window.addEventListener("touchmove", touch,{ passive: false })
             function documentLoad() {
                 return new Promise((a, b) => { window.onload = () => a() });
             }
@@ -160,6 +169,9 @@
             .then(el=>{viev.buttons.rightBut.ontouchend=()=>{keyup(null,"d")}})
             .then(el=>{viev.buttons.jumpBut.ontouchstart=()=>{keyDown(null," ")}})
             .then(el=>{viev.buttons.jumpBut.ontouchend=()=>{keyup(null," ")}})
+
+
+            
 
 
             
@@ -856,6 +868,7 @@
             let lifeTablo  = new Tablo(180);
             let scoreTablo = new Tablo(290);
             let countRound = new Tablo(400);
+
             this.buttons.leftBut    = new Button(newBlockRadius/5,1,"leftButtid")
             this.buttons.rightBut    = new Button(newBlockRadius*3,2,"rightButtid")
             this.buttons.jumpBut    = new Button(newBlockRadius*20,3,"jumpButtid")
@@ -867,15 +880,15 @@
                 countRound.textContent = "Round: " + round;
             }
             let wrapper=document.getElementById("game-wraper")
-            documentLoad()
-                .then(e => wrapper.appendChild(timerTablo))
-                .then(e => wrapper.appendChild(lifeTablo))
-                .then(e => wrapper.appendChild(scoreTablo))
-                .then(e => wrapper.appendChild(countRound))
-                .then(e => updateTimeScoreLife(100, 100, 100))
                 wrapper.appendChild(this.buttons.leftBut)
                 wrapper.appendChild(this.buttons.rightBut)
                 wrapper.appendChild(this.buttons.jumpBut)
+                wrapper.appendChild(timerTablo)
+                wrapper.appendChild(lifeTablo)
+                wrapper.appendChild(scoreTablo)
+                wrapper.appendChild(countRound)
+                updateTimeScoreLife(100, 100, 100,3)
+           
 
             this.update = () => {
                 div.style.backgroundPositionX = marioAnimation()
