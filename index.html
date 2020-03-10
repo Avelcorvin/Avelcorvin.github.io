@@ -28,6 +28,7 @@
             padding: 0px;
             position: relative;
             border: solid black 5px;
+            transform: translateZ(0);
             /* overflow: hidden; */
             background-color: rgb(202, 230, 238);
        
@@ -690,7 +691,7 @@
                     div.style.backgroundImage = "url(./wall.svg)"
                     div.style.backgroundSize="cover"
                     div.className = "wall";
-                   // div.style.transform = "translateZ(0)"
+                    //div.style.transform = "translateZ(0)"
                     return div;
                 }
                 if (el.name === "2") {
@@ -743,15 +744,11 @@
                             div.style.height = newBlockRadius + "px";
                         if (el.name === "#") {
                             div.style.backgroundSize="100%"
-                           
                         }
                         if (el.name === "2") {
                             div.style.backgroundImage = "url(./duck2.svg)"
                         }
                         if (el.name === "!") {
-                            div.className = "Finish";
-                            div.style.backgroundColor = "brown";
-                       
                         }
                         screen.style.height =7* newBlockRadius + "px"
 
@@ -827,8 +824,6 @@
                     tablo.style.height = "20px";
                     tablo.style.left = 2 * newBlockRadius + left + "px";
                     tablo.style.position = "absolute";
-                    //    tablo.style.backgroundColor="red";
-                    //    tablo.style.border="black solid 1px";
                     tablo.style.top =  5 + "px";
 
                 return tablo
