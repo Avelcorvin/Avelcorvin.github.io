@@ -149,12 +149,12 @@
             .then(el=>{viev.buttons.jumpBut.onmousedown=()=>{keyDown(null," ")}})
             .then(el=>{viev.buttons.jumpBut.onmouseup=()=>{keyup(null," ")}})
 
-            .then(el=>{viev.buttons.leftBut.touchstart=()=>{alert("touch")}})
-            .then(el=>{viev.buttons.leftBut.touchend=()=>{keyup(null,"a")}})
-            .then(el=>{viev.buttons.rightBut.touchstart=()=>{keyDown(null,"d")}})
-            .then(el=>{viev.buttons.rightBut.touchend=()=>{keyup(null,"d")}})
-            .then(el=>{viev.buttons.jumpBut.touchstart=()=>{keyDown(null," ")}})
-            .then(el=>{viev.buttons.jumpBut.touchend=()=>{keyup(null," ")}})
+            .then(el=>{viev.buttons.leftBut.ontouchstart=()=>{keyDown(null,"a")}})
+            .then(el=>{viev.buttons.leftBut.ontouchend=()=>{keyup(null,"a")}})
+            .then(el=>{viev.buttons.rightBut.ontouchstart=()=>{keyDown(null,"d")}})
+            .then(el=>{viev.buttons.rightBut.ontouchend=()=>{keyup(null,"d")}})
+            .then(el=>{viev.buttons.jumpBut.ontouchstart=()=>{keyDown(null," ")}})
+            .then(el=>{viev.buttons.jumpBut.ontouchend=()=>{keyup(null," ")}})
 
 
             
