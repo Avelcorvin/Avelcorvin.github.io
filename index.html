@@ -149,7 +149,7 @@
             .then(el=>{viev.buttons.jumpBut.onmousedown=()=>{keyDown(null," ")}})
             .then(el=>{viev.buttons.jumpBut.onmouseup=()=>{keyup(null," ")}})
 
-            .then(el=>{viev.buttons.leftBut.touchstart=()=>{console.log("touch")}})
+            .then(el=>{viev.buttons.leftBut.touchstart=()=>{alert("touch")}})
             .then(el=>{viev.buttons.leftBut.touchend=()=>{keyup(null,"a")}})
             .then(el=>{viev.buttons.rightBut.touchstart=()=>{keyDown(null,"d")}})
             .then(el=>{viev.buttons.rightBut.touchend=()=>{keyup(null,"d")}})
