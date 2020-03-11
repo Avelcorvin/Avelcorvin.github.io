@@ -809,19 +809,59 @@
                         }
                         if (el.name === "!") {
                         }
+                    } 
                         screen.style.height =7* newBlockRadius + "px"
+
+                        document.getElementById("leftButtid").style.left=newBlockRadius/5+"px"
+                        document.getElementById("leftButtid").style.top=6*newBlockRadius+"px"
+                        document.getElementById("leftButtid").style.width=2 * newBlockRadius + "px";
+                        document.getElementById("leftButtid").style.height=newBlockRadius*0.8+"px";
+
+                        document.getElementById("rightButtid").style.left=newBlockRadius*3+"px"
+                        document.getElementById("rightButtid").style.top=6*newBlockRadius+"px"
+                        document.getElementById("rightButtid").style.width=2 * newBlockRadius + "px";
+                        document.getElementById("rightButtid").style.height=newBlockRadius*0.8+"px";
+
+                        document.getElementById("jumpButtid").style.left=newBlockRadius*14+"px"
+                        document.getElementById("jumpButtid").style.top=6*newBlockRadius+"px"
+                        document.getElementById("jumpButtid").style.width=2 * newBlockRadius + "px";
+                        document.getElementById("jumpButtid").style.height=newBlockRadius*0.8+"px";
+
+                        timerTablo.style.width=2 * newBlockRadius + "px";
+                        timerTablo.style.height=0.4* newBlockRadius+"px";
+                        timerTablo.style.fontSize=0.4* newBlockRadius+"px"
+                        timerTablo.style.left = 3 * newBlockRadius  + "px";
+                        timerTablo.style.top =  0.1*newBlockRadius + "px";
+
+                        lifeTablo.style.width=2 * newBlockRadius + "px";
+                        lifeTablo.style.height=0.4* newBlockRadius+"px";
+                        lifeTablo.style.fontSize=0.4* newBlockRadius+"px"
+                        lifeTablo.style.left = 3*2.5* newBlockRadius  + "px";
+                        lifeTablo.style.top =  0.1*newBlockRadius + "px";
+
+                        scoreTablo.style.width=2 * newBlockRadius + "px";
+                        scoreTablo.style.height=0.4* newBlockRadius+"px";
+                        scoreTablo.style.fontSize=0.4* newBlockRadius+"px"
+                        scoreTablo.style.left = 3*3.5 * newBlockRadius  + "px";
+                        scoreTablo.style.top =  0.1*newBlockRadius + "px";
+
+                        countRound.style.width=2 * newBlockRadius + "px";
+                        countRound.style.height=0.4* newBlockRadius+"px";
+                        countRound.style.fontSize=0.4* newBlockRadius+"px"
+                        countRound.style.left = 3*5 * newBlockRadius  + "px";
+                        countRound.style.top =  0.1*newBlockRadius + "px";
 
                         let pl = document.getElementById("Player")
                             pl.style.width = hash.player.width* newBlockRadius / blockRadius+ "px";
                             pl.style.height =hash.player.height* newBlockRadius / blockRadius + "px";
                             pl.style.top =      hash.player.y* newBlockRadius / blockRadius + "px"
                             pl.style.left =     hash.player.x* newBlockRadius / blockRadius + "px"
-                } 
+                
             }
             window.addEventListener(`resize`, event => {
                 window.client
-                console.log(blockRadius*window.innerWidth/1679)
-                newBlockRadius=Number.parseInt(blockRadius*window.innerWidth/1679)
+                console.log(blockRadius*window.innerWidth/1920)
+                newBlockRadius=Number.parseInt(blockRadius*window.innerWidth/1920)
                 this.updateSizeWorld()
             // some code
             }, false);
@@ -889,8 +929,9 @@
                     tablo.style.width = 2 * newBlockRadius + "px";
                     tablo.style.height = "20px";
                     tablo.style.left = 2 * newBlockRadius + left + "px";
-                    tablo.style.position = "absolute";
                     tablo.style.top =  5 + "px";
+                    tablo.style.position = "absolute";
+                   
 
                 return tablo
             }
@@ -904,20 +945,21 @@
                 let button = document.createElement("div");
                     button.id=id;
                     button.style.width = 2 * blockRadius + "px";
+                    button.style.height = "40px";
                     button.style.backgroundRepeat="no-repeat"
                     button.style.backgroundImage =`url(${URLS[url]})`;
                     button.style.backgroundSize="100% 100%"
-                    button.style.height = "40px";
-                    button.style.left =  blockRadius + left + "px";
+                    
+                    button.style.left = left + "px";
                     button.style.top = 6*newBlockRadius+  "px";
                     button.style.position = "absolute";
                 return button
 
             }
-            let timerTablo = new Tablo(70);
-            let lifeTablo  = new Tablo(180);
-            let scoreTablo = new Tablo(290);
-            let countRound = new Tablo(400);
+            let timerTablo = new Tablo(70,"timerTablo");
+            let lifeTablo  = new Tablo(180,"lifeTablo");
+            let scoreTablo = new Tablo(290,"scoreTablo");
+            let countRound = new Tablo(400,"countRound");
 
             this.buttons.leftBut    = new Button(newBlockRadius/5,1,"leftButtid")
             this.buttons.rightBut    = new Button(newBlockRadius*3,2,"rightButtid")
