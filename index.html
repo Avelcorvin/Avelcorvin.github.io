@@ -3,18 +3,49 @@
 
 <head>
     <meta charset="UTF-8">
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 
 <body>
-    <div id="game-wraper">
-    <div id="screen"></div>
-    </div>
     <style>
+        html {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+
+        }
+
+        body {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+        }
+
+        h1 {
+            margin: 0px;
+            padding: 0px;
+
+        }
+
+        #root {
+            background-color: aqua;
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+        }
+
+        #root-body {
+            background-color: aqua;
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+        }
+
         body {
             position: relative;
             margin: 0px;
@@ -30,98 +61,97 @@
             padding: 0px;
             position: relative;
             border: solid black 5px;
-         
             /* overflow: hidden; */
             background-color: rgb(202, 230, 238);
-       
-        }
-        #screen{
-            transform: translateZ(0);
-        }
 
-           
+        }
+    </style>
+        <div id="root">
+            <div id="game-wraper">
+                <div id="screen"></div>
+            </div>
+            
+        </div>      
+       
+
+
+        <script>
+            /*
+    
+            */
+
+
+     
           
-    </style>    
-    <script>
-        /*
+           
+           
+           
+           
+           
+            window.addEventListener("hashchange", swithcUrlHash, false)
+            window.addEventListener("beforeunload", () => { alert("вы покидаете страницу") }, false)
+
+
+            let SPAState = { pagename: "Main" }
+            function swithcUrlHash(EO) {
+                EO = EO || window.event
+                let URLHash = window.location.hash;
+                let URLHahsAfterAnchor = URLHash.substr(1)
+
+                if (URLHahsAfterAnchor != "") {
+                    SPAState = { pagename: URLHahsAfterAnchor }
+                }
+                else SPAState = { pagename: "Main" }
+
+                let pageHTML = `
+                        <div id="root-nav">
+                            <input type="button" id="main" value="Главная Страница" onclick="switchToMainPage()"/>
+                            <input type="button" id="roole" value="Правила" onclick="switchToRoolePage()"/>
+                            <input type="button" id="about" value="О нас" onclick="switchToAboutPage()">
+                            <input type="button" id="newGmae" value="Новая Игра" onclick="switchToNewGAme()">
+                        <div/>`
+                        
+                        ;
+
+                switch (SPAState.pagename) {
+                    case 'Main':
+                        pageHTML += "<h3>Главная страница</h3>";
+                        pageHTML += "<p>Щёлкайте по кнопкам!</p>";
+                        break;
+                    case 'Roole':
+                        pageHTML += `
+                                    <div id="root-body">
+                                    <h1>Правила игры</h1> 
+                                    <p/>Правила простые за отведенное время необходимо добраться до конца арены
+                                    <div/>`;
+                        break;
+
+                    case 'About':
+                        pageHTML += "<h3>О нас</h3>";
+                        pageHTML += "<p>Мы круты!</p>";
+                        break;
+
+                    case 'Newgame':
+                    console.log("Новая гира")
+                    pageHTML = `
+                        <div id="root-nav">
+                            <input type="button" id="main" value="Главная Страница" onclick="switchToMainPage()"/>
+                            <input type="button" id="roole" value="Правила" onclick="switchToRoolePage()"/>
+                            <input type="button" id="about" value="О нас" onclick="switchToAboutPage()">
+                            <input type="button" id="newGmae" value="Новая Игра" onclick="switchToNewGAme()">
+                        <div/>
+                        <div id="game-wraper"><div id="screen"></div></div>`
+                        break;
+
+                }
+                 document.getElementById("root").innerHTML=pageHTML;        
+                 /*
 
         */
         
         
 
-        let blockRadius = 50;
-        let newBlockRadius=50;
-        window.addEventListener(`resize`, event => {
-            window.client
-            console.log(blockRadius*window.innerWidth/1679)
-            newBlockRadius=Number.parseInt(blockRadius*window.innerWidth/1679)
-            viev.updateSizeWorld()
-        // some code
-        }, false);
-        
-
-        function Screen(blockRadius) {
-            let screen = document.getElementById("screen")
-            // screen.style.left = 2 * blockRadius + "px"
-            // screen.style.top = 2 * blockRadius + "px"
-            screen.style.width = "auto";
-            
-            screen.style.height =7* blockRadius + "px"
-            screen.style.transform = "scale(1,1)"
-            screen.style.overflow= "hidden";
-            return screen
-        }
-
-
-            /*
-             *
-             * Audio
-             * 
-             *  
-            */
-
-            
-
-        function AudioClass(a) {
-            let audio = new Audio()
-            audio.src = a;
-            return audio;
-        }
-        //передаю song и запускаю сонг
-        function playAudios(song, obj) {
-
-            function songIsPLay(obj) {
-                setTimeout(() => { model.hash.audio[obj] = false }, 200);
-            }
-            audioArray.forEach(el => {
-                if (el === song) {
-                    song.currentTime = 0;
-                    song.play()
-                        .then(a =>
-                            songIsPLay(obj)).catch(e => songIsPLay(obj))
-                }
-                if (el !== song) {
-                    el.currentTime = 0;
-                    el.pause()
-                }
-            })
-        }
-        let saundtrack = new AudioClass("./song1.mp3");
-        let jumpSong = new AudioClass("./jump.mp3");
-        let pushBlock = new AudioClass("./pushblock.mp3");
-
-        let audioArray = [jumpSong, pushBlock]
-        function audioInit() {
-            saundtrack.play()
-            saundtrack.pause()
-            jumpSong.load()
-            jumpSong.pause()
-            pushBlock.load()
-            pushBlock.pause()
-            audioInit = () => { };
-        }
-
-        /*
+         /*
         *---------------------------------------Controller------------------------------    
         */
         function MainController() {
@@ -136,6 +166,9 @@
             function keyDown(EO,a) {
                 EO = EO || window.event;
                 key = a||EO.key;
+                if(key==="a"||key==="A"||key==="ф"||key==="Ф")key="a"
+                if(key==="d"||key==="D"||key==="в"||key==="В")key="d"
+
                 hash[key] = true;
                 audioInit()
                 window.navigator.vibrate(100);
@@ -143,6 +176,8 @@
             function keyup(EO,a) {
                 EO = EO || window.event;
                 key = a||EO.key;
+                if(key==="a"||key==="A"||key==="ф"||key==="Ф")key="a"
+                if(key==="d"||key==="D"||key==="в"||key==="В")key="d"
                 hash[key] = false;
                 window.navigator.vibrate(100);
             }
@@ -593,7 +628,7 @@
                
                 //движение главного героя
                 function moveRight() {
-                    window.navigator.vibrate(100)
+                    //window.navigator.vibrate(100)
                    // console.log(hash.player.x,hash.player.y,)
                     viev.update();
                     hash.rigth = true;
@@ -605,7 +640,7 @@
 
                 }
                 function moveLeft() {
-                    window.navigator.vibrate(100)
+                   // window.navigator.vibrate(100)
                     viev.update();
                     hash.left = true;
                     hash.rigth = false;
@@ -628,7 +663,7 @@
                     }
                 }
                 function jump() {
-                    window.navigator.vibrate(100)
+                   // window.navigator.vibrate(100)
                    // console.log(hash.player.x,hash.player.y,)
                     if (!hash.audio.jumpSong) {
                         playAudios(jumpSong, "jumpSong");
@@ -664,7 +699,7 @@
         /*
         *--------------------------------------------Viev-------------------------------
         */
-             function MainViev() {
+        function MainViev() {
             this.model = null;         // с какой моделью работаем
             this.myField = null;
             this.buttons={};       // внутри какого элемента DOM наша вёрстка
@@ -674,6 +709,7 @@
 
             let hash = model.hash
 
+     
 
             this.start = (mainModel, mainScreen) => { //связывает состояние модели с отображением 
                 this.model = mainModel;
@@ -782,6 +818,13 @@
                             pl.style.left =     hash.player.x* newBlockRadius / blockRadius + "px"
                 } 
             }
+            window.addEventListener(`resize`, event => {
+                window.client
+                console.log(blockRadius*window.innerWidth/1679)
+                newBlockRadius=Number.parseInt(blockRadius*window.innerWidth/1679)
+                this.updateSizeWorld()
+            // some code
+            }, false);
             this.updateSizeWorld=()=>{
                 updateObjecktAfterResize(gameObjecktArray)
                 }
@@ -837,10 +880,10 @@
             //метод который заставляет обновляться вью
 
             //его вызывает модель каждый раз когда обновляеться 
-
-            function documentLoad() {
-                return new Promise((a, b) => { window.onload = () => a() });
-            }
+        
+            // function documentLoad() {
+            //     return new Promise((a, b) => { window.onload = () => a() });
+            // }
             function Tablo(left) {
                 let tablo = document.createElement("div");
                     tablo.style.width = 2 * newBlockRadius + "px";
@@ -925,17 +968,111 @@
             }
         }
 
-        let screen = new Screen(blockRadius);
+            /*
+             --------------------------------- Audio--------------------------------------
+            */
+
+        function AudioClass(a) {
+            let audio = new Audio()
+            audio.src = a;
+            return audio;
+        }
+        //передаю song и запускаю сонг
+        function playAudios(song, obj) {
+
+            function songIsPLay(obj) {
+                setTimeout(() => { model.hash.audio[obj] = false }, 200);
+            }
+            audioArray.forEach(el => {
+                if (el === song) {
+                    song.currentTime = 0;
+                    song.play()
+                        .then(a =>
+                            songIsPLay(obj)).catch(e => songIsPLay(obj))
+                }
+                if (el !== song) {
+                    el.currentTime = 0;
+                    el.pause()
+                }
+            })
+        }
+  
+        function audioInit() {
+            saundtrack.play()
+            saundtrack.pause()
+            jumpSong.load()
+            jumpSong.pause()
+            pushBlock.load()
+            pushBlock.pause()
+            audioInit = () => { };
+        }
+
+        let blockRadius = 50;
+        let newBlockRadius=50;
+        let saundtrack = new AudioClass("./song1.mp3");
+        let jumpSong = new AudioClass("./jump.mp3");
+        let pushBlock = new AudioClass("./pushblock.mp3");
+        let audioArray = [jumpSong, pushBlock]
+        let wrapper = document.getElementById("game-wraper")// screeen
+        let screen = document.getElementById("screen")// screeen
+        // screen.style.left = 2 * blockRadius + "px"
+        // screen.style.top = 2 * blockRadius + "px"
+            screen.style.width = "auto";
+            screen.style.height =7* blockRadius + "px"
+            screen.style.transform = "scale(1,1)"
+            screen.style.overflow= "hidden";
+        
+
         let model = new MainModel()
         let viev = new MainViev();
         let controller = new MainController();
+
         controller.start(model,viev);
         viev.start(model, screen);
         model.start(viev, screen)
+   
 
 
 
-    </script>
+    }
+
+
+            function switchToState(newState) {
+                let stateStr = newState.pagename;
+                location.hash = stateStr;
+            }
+
+            function switchToMainPage() {
+                switchToState({ pagename: 'Main' });
+            }
+
+            function switchToRoolePage() {
+                switchToState({ pagename: 'Roole', });
+            }
+
+            function switchToAboutPage() {
+                switchToState({ pagename: 'About' });
+            }
+            swithcUrlHash()
+            function switchToNewGAme() {
+                switchToState({ pagename: 'Newgame' });
+            }
+            swithcUrlHash()
+
+
+
+
+
+
+
+
+
+        </script>
+
+
+</body>
+
+</html>
 
 
 </body>
