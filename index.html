@@ -812,20 +812,22 @@
                     } 
                         screen.style.height =7* newBlockRadius + "px"
 
-                        document.getElementById("leftButtid").style.left=newBlockRadius/5+"px"
-                        document.getElementById("leftButtid").style.top=6*newBlockRadius+"px"
+                        console.log()
+                        document.getElementById("leftButtid").style.left=newBlockRadius/5*2+"px"
+                        document.getElementById("leftButtid").style.top=window.innerHeight-6*newBlockRadius+"px"
                         document.getElementById("leftButtid").style.width=2 * newBlockRadius + "px";
                         document.getElementById("leftButtid").style.height=newBlockRadius*0.8+"px";
 
-                        document.getElementById("rightButtid").style.left=newBlockRadius*3+"px"
-                        document.getElementById("rightButtid").style.top=6*newBlockRadius+"px"
+                        document.getElementById("rightButtid").style.left=newBlockRadius*3*2+"px"
+                        document.getElementById("rightButtid").style.top=window.innerHeight-6*newBlockRadius+"px"
                         document.getElementById("rightButtid").style.width=2 * newBlockRadius + "px";
                         document.getElementById("rightButtid").style.height=newBlockRadius*0.8+"px";
 
-                        document.getElementById("jumpButtid").style.left=newBlockRadius*14+"px"
-                        document.getElementById("jumpButtid").style.top=6*newBlockRadius+"px"
+                        document.getElementById("jumpButtid").style.left=window.innerWidth - 2*newBlockRadius*4+"px"
+                        document.getElementById("jumpButtid").style.top=window.innerHeight-6*newBlockRadius+"px"
                         document.getElementById("jumpButtid").style.width=2 * newBlockRadius + "px";
                         document.getElementById("jumpButtid").style.height=newBlockRadius*0.8+"px";
+
 
                         timerTablo.style.width=2 * newBlockRadius + "px";
                         timerTablo.style.height=0.4* newBlockRadius+"px";
