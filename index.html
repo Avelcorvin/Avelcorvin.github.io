@@ -818,7 +818,7 @@
                         document.getElementById("leftButtid").style.width=2 * newBlockRadius + "px";
                         document.getElementById("leftButtid").style.height=newBlockRadius*0.8+"px";
 
-                        document.getElementById("rightButtid").style.left=newBlockRadius*3*2+"px"
+                        document.getElementById("rightButtid").style.left=newBlockRadius*3+"px"
                         document.getElementById("rightButtid").style.top=window.innerHeight-6*newBlockRadius+"px"
                         document.getElementById("rightButtid").style.width=2 * newBlockRadius + "px";
                         document.getElementById("rightButtid").style.height=newBlockRadius*0.8+"px";
@@ -953,19 +953,20 @@
                     button.style.backgroundSize="100% 100%"
                     
                     button.style.left = left + "px";
-                    button.style.top = 6*newBlockRadius+  "px";
+                    button.style.top =window.innerHeight-4*newBlockRadius+"px";
                     button.style.position = "absolute";
                 return button
 
             }
+           
             let timerTablo = new Tablo(70,"timerTablo");
             let lifeTablo  = new Tablo(180,"lifeTablo");
             let scoreTablo = new Tablo(290,"scoreTablo");
             let countRound = new Tablo(400,"countRound");
 
-            this.buttons.leftBut    = new Button(newBlockRadius/5,1,"leftButtid")
+            this.buttons.leftBut    = new Button(newBlockRadius/5*2,1,"leftButtid")
             this.buttons.rightBut    = new Button(newBlockRadius*3,2,"rightButtid")
-            this.buttons.jumpBut    = new Button(newBlockRadius*14,3,"jumpButtid")
+            this.buttons.jumpBut    = new Button(window.innerWidth - 2*newBlockRadius*4,3,"jumpButtid")
             // console.log(leftBut)
             function updateTimeScoreLife(timer, life, score, round) {
                 timerTablo.textContent = "Time: " + Number.parseInt(timer / 100);
@@ -973,6 +974,7 @@
                 scoreTablo.textContent = score;
                 countRound.textContent = "Round: " + round;
             }
+           
             let wrapper=document.getElementById("game-wraper")
                 wrapper.appendChild(this.buttons.leftBut)
                 wrapper.appendChild(this.buttons.rightBut)
@@ -982,7 +984,6 @@
                 wrapper.appendChild(scoreTablo)
                 wrapper.appendChild(countRound)
                 updateTimeScoreLife(100, 100, 100,3)
-           
 
             this.update = () => {
                 div.style.backgroundPositionX = marioAnimation()
