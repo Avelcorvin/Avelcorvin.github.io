@@ -4,15 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"  type="text/css"  href="./index.css">
     <link rel="stylesheet"  type="text/css"  href="/index.css">
     <title>Document</title>
 </head>
 
 <body>
     <div id="root">
+        <!-- <div id="main-menu">
+            <ul>
+             <li><a href="#Newgame"></a>Новая Игра</li>
+             <li><a href="#Roole"></a>Правила</li>
+             <li><a href="#best_players"></a>Лучшие Резульаты</li>
+             <li><a href="#About"></a>О нас</li>
+
+             </ul>
+        </div>
+
         <div id="game-wraper">
             <div id="screen"></div>
-        </div>
+        </div> -->
 
     </div>
 
@@ -30,78 +41,147 @@
         let SPAState = { pagename: "Main" }
         let modelState = "";
         let ajaxHandlerScript = "https://fe.it-academy.by/AjaxStringStorage2.php";
+
+        let scoredata=""
+
         function swithcUrlHash(EO) {
+           if(SPAState.pagename==="Newgame") {
+               let isEndGame=confirm("Если вы покинете игру прогресс будет утерян")
+               if(!isEndGame) return;
+        }
            
                 EO = EO || window.event
                 let URLHash = window.location.hash;
                 let URLHahsAfterAnchor = URLHash.substr(1)
 
-         
-
-                    // отдельно создаём набор POST-параметров запроса
-
-          
-
                 if (URLHahsAfterAnchor != "") {
                     SPAState = { pagename: URLHahsAfterAnchor }
                 }
                 else SPAState = { pagename: "Main" }
+                
+                function drawPage(arr){
+                                   
+                    scoredata = ` <ul id="best-score">`
+                                       for (prop in arr){
+                                        scoredata += `<li>${prop}:${arr[prop]}</li>`
+                                   }
+                    scoredata += `   <li>
+                                                       <a href="#Main">Вернуться в  главное меню</a> 
+                                                   </li>
+                                               </ul>
+                                           </div>`
+                               }
+
+                let sp = new URLSearchParams();
+                        sp.append('f', 'READ');
+                        sp.append('n', 'KORBAN_DATA_TEST2');
+
+                        fetch(ajaxHandlerScript, { method: 'post', body: sp })
+                            .then(response => response.json())
+                            .then(data =>data=JSON.parse(data.result))
+                            .then(
+                                data=>{drawPage(data)})
+                            .catch(error => { console.error(error); });
+
+
+
 
                 let pageHTML = `
-                        <div id="root-nav">
-                            <input type="button" id="main" value="Главная Страница" onclick="switchToMainPage()"/>
-                            <input type="button" id="roole" value="Правила" onclick="switchToRoolePage()"/>
-                            <input type="button" id="about" value="О нас" onclick="switchToAboutPage()">
-                            <input type="button" id="newGmae" value="Новая Игра" onclick="switchToNewGAme()">
-                            <input type="button" id="main" value="Лучшие игроки" onclick="switchToBest_players()"/>
-                        <div/>`
+                <header>  <span id="logo">МариоАрти</span> </header>
+                                <div id="root-nav">
+                                    <input type="button" id="main" value="Главная Страница" onclick="switchToMainPage()"/>
+                                    <input type="button" id="roole" value="Правила" onclick="switchToRoolePage()"/>
+                                    <input type="button" id="about" value="О нас" onclick="switchToAboutPage()">
+                                    <input type="button" id="newGmae" value="Новая Игра" onclick="switchToNewGAme()">
+                                    <input type="button" id="main" value="Лучшие игроки" onclick="switchToBest_players()"/>
+                                <div/>`
 
                     ;
 
                 switch (SPAState.pagename) {
                     case 'Main':
-                        pageHTML += "<h3>Главная страница</h3>";
-                        pageHTML += "<p>Щёлкайте по кнопкам!</p>";
+                     pageHTML = `
+                     <header>  <span id="logo">МариоАрти</span> </header>
+                                    <div id="main-menu">
+                                        <ul>
+                                            <li><a href="#Newgame">Новая Игра</a></li>
+                                            <li><a href="#Roole">Правила</a></li>
+                                            <li><a href="#best_players">Лучшие Резульаты</a></li>
+                                            <li><a href="#About">О нас</a></li>
+                                        </ul>
+                                    </div>`
                         break;
+                    
                     case 'Roole':
-                        pageHTML += `
-                                    <div id="root-body">
-                                    <h1>Правила игры</h1> 
-                                    <p/>Правила простые за отведенное время необходимо добраться до конца арены
-                                    </div>`;
+                        pageHTML = `
+                        <header>  <span id="logo">МариоАрти</span> </header>
+                                    <div id="main-content">
+                                        <h1>Правила игры</h1> 
+                                         <p/>Правила простые за отведенное время необходимо добраться до конца арены.
+                                         <p/>Что бы переместить персонажа вправо нажмите D(в)
+                                         <p/>Что бы переместить персонажа влево нажмите A(ф)
+                                         <p/>Что бы подпрыгнуть нажмите 'space'
+                                         <p/><a href="#Main">Вернуться в  главное меню</a>
+                                    </div>`
+                       
                         break;
 
                     case 'About':
-                        pageHTML += "<h3>О нас</h3>";
-                        pageHTML += "<p>Мы круты!</p>";
+                    pageHTML = `
+                    <header>  <span id="logo">МариоАрти</span> </header>
+                                    <div id="main-content">
+                                        <h1>О нас </h1> 
+                                         <p/>Мы разрабатывали как могли
+                                         <p/>Получилось  cлишком хорошо
+                                         <p/>Поэтому мы опубликовали сырую версию
+                                         <p/>
+                                         <a href="#Main">Вернуться в  главное меню</a>
+                                    </div>`
                         break;
 
                     case 'Newgame':
-                        console.log("Новая гира")
                         pageHTML = `
-                        <div id="root-nav"> <input type="button" id="newGmae" value="Выйти из Игры" onclick="switchToMainPage()"/>
-                        <div/>
-                        <div id="game-wraper"><div id="screen"></div></div>`
+                            <div id="root-nav">
+                                 <input type="button" id="newGmae" value="Выйти из Игры" onclick="switchToMainPage()"/>
+                            <div/>
+                                <div id="game-wraper">
+                                    <div id="screen"></div>
+                                </div>`
                         break;
                     case 'Score':
+                        pageHTML = `<header>  <span id="logo">МариоАрти</span> </header>
+                                    <div id="main-content">`
+                        
                         pageHTML += "<h3>О да вы молодец </h3>";
                         pageHTML += `<p>Ваш результат ${modelState}`;
                         pageHTML += `<p>Может вы желаете внести результат в книгу чемпионов `
                         pageHTML += ` <br/><input type="text" id="username" value="имя игрока" >`
-                        pageHTML += ` <input type="button" id="Read" value="Прочитать" onclick="readDataKorban()">`
                         pageHTML += ` <input type="button" id="Write" value="Записать" onclick="writeDataKorban()">`
+                        pageHTML += `<p/><a href="#Main">Вернуться в  главное меню</a>  </div>  `;
                         break;
 
 
                     case 'best_players':
-                        pageHTML = `<div id="root-nav"> 
-                            <input type="button" id="newGmae" value="Вернуться на главную" onclick="switchToMainPage()"/>  <div/>`
-                        pageHTML += `Таблица Лучших игроков`
-                            function drawPage(arr){
-                                pageHTML += `<div class="winners">Победители`
-                                for (prop in arr){
-                                    pageHTML += `<div class="winner-list">${prop}:${arr[prop]}</div>`
+                    
+                        pageHTML = `<header>  <span id="logo">МариоАрти</span> </header>
+                                        <div id="main-content">
+                                            <h1>Лучшие резултаты </h1>`
+                        pageHTML+=scoredata;
+                        
+                        function drawPage(arr){
+                            pageHTML = `<header>  <span id="logo">МариоАрти</span> </header>
+                                        <div id="main-content">
+                                            <h1>Лучшие резултаты </h1>`
+                                   
+                                pageHTML += ` <ul id="best-score">`
+                                    for (prop in arr){
+                                    pageHTML += `<li>${prop}:${arr[prop]}</li>`
                                 }
+                                pageHTML += `   <li>
+                                                    <a href="#Main">Вернуться в  главное меню</a> 
+                                                </li>
+                                            </ul>
+                                        </div>`
                             }
 
                         
@@ -117,16 +197,14 @@
                                     document.getElementById("root").innerHTML = pageHTML})
                             .catch(error => { console.error(error); });
 
-                        break;
+                         break;
 
                 }
                 document.getElementById("root").innerHTML = pageHTML;
                 /*
 
        */
-
-
-
+       if(SPAState.pagename==="Newgame"){
                 /*
                *---------------------------------------Controller------------------------------    
                */
@@ -199,14 +277,15 @@
                     let viev = null;
                     let field = null;
                     let map = [     //1,  2,  3  ,4  ,5  ,6  ,7  ,8   ,9   10,  11  ,12  ,13  ,14  ,15 , 16
-                        ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//1   x0,y0
-                        ["#", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//2   x0,y0+n*s1
-                        ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//3
-                        ["#", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//4
-                        ["#", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//5
-                        ["#", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ", "!"],//6
-                        ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"],//7
+                        ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "," ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//1   x0,y0
+                        ["#", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "," ", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//2   x0,y0+n*s1
+                        ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//3
+                        ["#", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//4
+                        ["#", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " "," ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ",  "!"],//5
+                        ["#", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ",  " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ","!"],//6
+                        ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#","#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#","#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#","#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#","#", "#"],//7
                     ]
+
                     let map2 = [     //1,  2,  3  ,4  ,5  ,6  ,7  ,8   ,9   10,  11  ,12  ,13  ,14  ,15 , 16
                         ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//1   x0,y0
                         ["#", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//2   x0,y0+n*s1
@@ -324,6 +403,11 @@
 
                         hash.gameTime = new Timer({ start: 300 * 60, tick: -1, gradient: 60, end: 0, callback: playerDie })
                         hash.gameTime.startTimer();
+
+
+                        
+
+                        // console.log(wall)
 
                         blockGrid = createBlockGreed(map2).greed;  //вся сетка объектов 
                         enemuGrid = createBlockGreed(map2).enemu;    //массив с противниками
@@ -734,6 +818,7 @@
                         }
                         if (el.name === "2") {
                             div.style.backgroundImage = "url(./duck2.svg)"
+                            div.className="monstr"
                             div.style.zIndex = 0;
                             div.style.border = "solid black 1px"
                             div.style.backgroundSize = `${1150}% ${780}%`
@@ -987,6 +1072,20 @@
                     }
 
                     this.newRound = (blockGrid, enemuGrid) => {
+                        
+                        let screeen = document.getElementById("screen");
+                        let wall=document.getElementsByClassName("wall");
+                        let monstr=document.getElementsByClassName("monstr");
+                        let finish=document.getElementsByClassName("Finish");
+                        for(let i=wall.length-1;i>=0;i--){
+                            screeen.removeChild(wall[i])
+                        }
+                        for(let i=monstr.length-1;i>=0;i--){
+                            screeen.removeChild(monstr[i])
+                        }
+                        for(let i=finish.length-1;i>=0;i--){
+                            screeen.removeChild(finish[i])
+                        }
                         drawblockGrid(blockGrid, screen)
                         AnumateMONSTRS(enemuGrid)
                     }
@@ -996,7 +1095,7 @@
                  --------------------------------- Audio--------------------------------------
                 */
 
-                function AudioClass(a) {
+              function AudioClass(a) {
                     let audio = new Audio()
                     audio.src = a;
                     return audio;
@@ -1057,9 +1156,7 @@
                 controller.start(model, viev);
                 viev.start(model, screen);
                 model.start(viev, screen)
-        
-
-
+            }
 
         }
 
@@ -1145,8 +1242,7 @@
 
 
 
-
-
+   
 
 
     </script>
