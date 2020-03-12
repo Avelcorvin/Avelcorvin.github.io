@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet"  type="text/css"  href="./index.css">
-    <link rel="stylesheet"  type="text/css"  href="/index.css">
+    <!-- <link rel="stylesheet"  type="text/css"  href="/index.css"> -->
     <title>Document</title>
 </head>
 
@@ -30,9 +30,19 @@
 
 
     <script>
-        /*
- 
-        */
+         var RAF=
+        // находим, какой метод доступен
+        window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        // ни один не доступен
+        // будем работать просто по таймеру
+        function(callback)
+            { window.setTimeout(callback, 1000 / 60); }
+
+
 
         window.addEventListener("hashchange", swithcUrlHash, false)
         window.addEventListener("beforeunload", () => { alert("вы покидаете страницу") }, false)
@@ -47,7 +57,7 @@
         function swithcUrlHash(EO) {
            if(SPAState.pagename==="Newgame") {
                let isEndGame=confirm("Если вы покинете игру прогресс будет утерян")
-               if(!isEndGame) return;
+                    if(!isEndGame) return;
         }
            
                 EO = EO || window.event
@@ -117,11 +127,14 @@
                         <header>  <span id="logo">МариоАрти</span> </header>
                                     <div id="main-content">
                                         <h1>Правила игры</h1> 
+                                        <div id="main-content-center">
+                                        
                                          <p/>Правила простые за отведенное время необходимо добраться до конца арены.
                                          <p/>Что бы переместить персонажа вправо нажмите D(в)
                                          <p/>Что бы переместить персонажа влево нажмите A(ф)
                                          <p/>Что бы подпрыгнуть нажмите 'space'
                                          <p/><a href="#Main">Вернуться в  главное меню</a>
+                                         </div>
                                     </div>`
                        
                         break;
@@ -150,14 +163,16 @@
                         break;
                     case 'Score':
                         pageHTML = `<header>  <span id="logo">МариоАрти</span> </header>
-                                    <div id="main-content">`
+                                    <div id="main-content">
+                                        <div id="main-content-center">`
                         
                         pageHTML += "<h3>О да вы молодец </h3>";
                         pageHTML += `<p>Ваш результат ${modelState}`;
-                        pageHTML += `<p>Может вы желаете внести результат в книгу чемпионов `
+                        pageHTML += `<p>Может вы желаете внести результат в книгу чемпионов? `
                         pageHTML += ` <br/><input type="text" id="username" value="имя игрока" >`
                         pageHTML += ` <input type="button" id="Write" value="Записать" onclick="writeDataKorban()">`
-                        pageHTML += `<p/><a href="#Main">Вернуться в  главное меню</a>  </div>  `;
+                        pageHTML += `<p/><a href="#Main">Вернуться в  главное меню</a> 
+                        <div id="main-content-center"></div> </div>  `;
                         break;
 
 
@@ -736,7 +751,7 @@
                             hash.down = true;
                             if (findBlockUp(blockGrid)) { hash.player.jumpSpeeD = 0; }
                             hash.player.y -= hash.player.jumpSpeeD * hash.flyTimer;
-                            if (hash.flyTimer > 0) window.requestAnimationFrame(jump)
+                            if (hash.flyTimer > 0) window.RAF(jump)
                             hash.flyTimer -= 1;
                             if (hash.flyTimer === -1) hash.flyTimer = 10;
                         }
@@ -753,11 +768,11 @@
                         if (hash.timer > 30) hash.timer = 1;
                         if (hash[" "] && !hash.jump && hash.flyTimer === 10) jump()
 
-                        if (!hash.roundIsEnd) window.requestAnimationFrame(move)
+                        if (!hash.roundIsEnd) window.RAF(move)
                         if (!hash.roundIsEnd) winRound(blockGrid)
                     }
                     let move = this.move.bind(this)
-                    window.requestAnimationFrame(() => this.move())
+                    window.RAF(() => this.move())
                 }
                 /*
                 *--------------------------------------------Viev-------------------------------

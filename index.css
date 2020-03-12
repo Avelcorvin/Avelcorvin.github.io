@@ -3,17 +3,38 @@ html {
     padding: 0px;
     width: 100%;
     height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
 }
-
+header{
+    background-color: rgb(243, 215, 154);
+    text-align: center;
+    width: 100%;
+    height: 15%;
+}
+#logo{
+    position: relative;
+    top: 13%;
+    font-size: 54px;
+    /* text-align: center; */
+    /* left: 37%; */
+    /* background-color: burlywood; */
+    /* width:  440px; */
+    /* margin:0px;
+    padding: 0px;*/
+} 
 body {
-    margin: 0px;
-    padding: 0px;
+    position: relative;
+    font-style: italic;
     width: 100%;
     height: 100%;
+    margin: 0px;
+    padding: 0px;
+    font-size: 25px;
+    
 }
-
 h1 {
+    text-align: center;
     margin: 0px;
     padding: 0px;
 
@@ -22,25 +43,14 @@ a{
     text-decoration: none;
     color: black;
 }
-header{
-    background-color: rgb(243, 215, 154);
-    margin: 0px;
-    padding: 0px;
-    width: 100%;
-    height: 10%;
-    font-size: 33px;
+a:hover{
+    color: red;
+    transition-duration: 0.4s;
+ }
+ul{
+    list-style-type: none; 
+}
 
-}
-#logo{
-    position: relative;
-    /* background-color: burlywood; */
-    top: 13%;
-    left: 37%;
-    font-size: 54px;
-    width:  440px;
-    margin:0px;
-    padding: 0px;
-}
 #root {
     background-color: rgb(216, 240, 240);
     margin: 0px;
@@ -48,81 +58,94 @@ header{
     width: 100%;
     height: 100%;
 }
+/* #root-body { */
+    /* background-color: aqua;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 100%;
+    position: relative; */
+/* } */
 /*  */
 #main-menu{
     position: relative;
-    /* background-color: burlywood; */
-    top: 13%;
-    left: 33%;
-    width:  440px;
+    text-align: center;
+    width: 100%;
     margin:0px;
     padding: 0px;
- 
-
+    font-size: 44px;
+    /* background-color: burlywood; */
+    /* top: 13%;
+    left: 33%; */
+    /* width:  440px; */
 }
  #main-menu>ul  {
-       list-style-type: none;
-       margin:0px;
+       /* list-style-type: none; */
+       /* margin:0px;
        padding: 0px;
-       width: 100%;
+       width: 100%; */
 }
 #main-menu>ul>li{
     
-    width: 100%;
-    height: auto;
+    /* width: 100%;
+    height: auto; */
     /* border: black solid; */
-    margin:0px;
-    padding: 0px;
-    position: relative;
-    text-align: center;
-    font-size: 44px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* margin:0px;
+    padding: 0px; */
+    /* position: relative;
+    text-align: center; */
+    /* font-size: 44px; */
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
 
 }
-#main-menu>ul>li>a{
-    text-decoration: none;
-}
-#main-menu>ul>li>a:hover{
+
+/* #main-menu>ul>li>a:hover{
    color: red;
    transition-duration: 0.4s;
-}
-
-/*  */
+} */
+/* #main-content>h1{
+    text-align: center;
+} */
 #main-content{
     position: relative;
-    /* background-color: burlywood; */
-    top: 15%;
-    left: 33%;
-    width:  440px;
+    text-align: center;
+    width: 100%;
     margin:0px;
     padding: 0px;
- 
-
+    font-size: 18px;
 }
- #main-content>ul  {
-       list-style-type: none;
-       margin:0px;
+#main-content-center{
+    position: relative;
+    left: 25%;
+    text-align: left;
+}
+
+
+#main-content>ul  {
+       /* list-style-type: none;
+       position: relative; */
+       /* margin:0px;
        padding: 0px;
-       width: 100%;
+       width: 100%; */
 }
 #main-content>ul>li{
-    
-    width: 100%;
-    height: auto;
-    /* border: black solid; */
-    margin:0px;
-    padding: 0px;
+    /* width: 100%; */
+    /* height: auto;
     position: relative;
     text-align: center;
     font-size: 44px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: black solid; */
+    /* margin:0px;
+    padding: 0px; */
+
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
 
 }
 
-#main-content>ul>li>a:hover{
+/* #main-content>ul>li>a:hover{
    color: red;
    transition-duration: 1s;
-}
+} */
 #Write{
     background: rgb(241, 199, 159);
     border: none;
@@ -159,10 +182,10 @@ header{
 
 
 #best-score>li{
-    width: 100%;
-    height: auto;
+    width: 100%; 
+    height: auto; 
     /* border: black solid; */
-    margin:0px;
+    margin: 0px;
     padding: 0px;
     position: relative;
     text-align: center;
@@ -175,23 +198,10 @@ header{
     left: 20%;  
 }
 
-#root-body {
-    background-color: aqua;
-    margin: 0px;
-    padding: 0px;
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
 
 
-body {
-    position: relative;
-    margin: 0px;
-    padding: 0px;
-    font-size: 25px;
-    font-style: italic;
-}
+
+/* 
 .winner-list{
     position: relative;
     background-color: beige;
@@ -206,7 +216,7 @@ body {
     top:15%;
     left: 30%;
     padding: 0px;
-}
+} */
 
 #game-wraper {
     /* top: 100px;
