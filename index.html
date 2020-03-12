@@ -55,15 +55,15 @@
         let scoredata=""
 
         function swithcUrlHash(EO) {
-           if(SPAState.pagename==="Newgame") {
-               let isEndGame=confirm("Если вы покинете игру прогресс будет утерян")
-                    if(!isEndGame) return;
-        }
-           
                 EO = EO || window.event
+
                 let URLHash = window.location.hash;
                 let URLHahsAfterAnchor = URLHash.substr(1)
 
+                if(SPAState.pagename==="Newgame"&&URLHahsAfterAnchor!=="Score") {
+                    let isEndGame=confirm("Если вы покинете игру прогресс будет утерян")
+                        if(!isEndGame) return;
+        }
                 if (URLHahsAfterAnchor != "") {
                     SPAState = { pagename: URLHahsAfterAnchor }
                 }
