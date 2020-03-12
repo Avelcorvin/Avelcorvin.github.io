@@ -253,10 +253,11 @@
                     }
                     function touch(EO) {
                         EO = EO || window.event;
-                        EO.preventDefault()
-                        console.log(EO)
 
                     }
+            
+
+
                     window.addEventListener("keydown", keyDown, false)
                     window.addEventListener("keyup", keyup, false)
                     window.addEventListener("touchmove", touch, { passive: false })
@@ -279,6 +280,28 @@
                         .then(el => { viev.buttons.jumpBut.ontouchend = () => { keyup(null, " ") } })
 
 
+
+                    //жесты
+
+                    function touchstart(EO) {
+                        EO = EO || window.event;
+                        let start=EO.changedTouches[0].clientX
+                        console.log(EO.changedTouches[0].clientX)
+
+                        window.addEventListener("touchend", touchEnd, false)
+
+                        function touchEnd(EO) {
+                            EO = EO || window.event;
+                            let end=EO.changedTouches[0].clientX
+                            console.log(EO.changedTouches[0].clientX)
+                            console.log(end-start)
+                            console.log((end-start)/gameScreen.width  )
+                            if((end-start)/gameScreen.width>0.75)history.go(1)
+                            if((end-start)/gameScreen.width<-0.75)history.go(-1)
+                        }
+                    }
+
+                    window.addEventListener("touchstart", touchstart, false)
 
 
 
