@@ -100,8 +100,17 @@ ul{
     border: solid black 5px;
     background-color: rgb(202, 230, 238);
 }
+#leftButtid{
+    display: none;
+}
+#rightButtid{
+    display: none;
+}
+#jumpButtid{
+    display: none;
+}
 
-@media (max-width: 640px) {
+@media (max-width: 1366px) {
     #best-score>li{
         font-size: 14px;
     }
@@ -119,6 +128,78 @@ ul{
     }
     #main-menu{
         font-size: 24px;
+    }
+    #leftButtid{
+        display: block ;
+    }
+    #rightButtid{
+        display: block ;
+    }
+    #jumpButtid{
+        display: block ;
+    }
+    
+
+}
+@media (max-height: 640px) {
+    #best-score>li{
+        font-size: 14px;
+    }
+    #main-content{
+        font-size: 14px;
+    }
+    h1 {
+        font-size: 18px;
+    }
+    #logo{
+        font-size: 34px;
+    } 
+    header{
+        height: 10%;
+    }
+    #main-menu{
+        font-size: 24px;
+    }
+    #leftButtid{
+        display: block ;
+    }
+    #rightButtid{
+        display: block ;
+    }
+    #jumpButtid{
+        display: block ;
+    }
+    
+
+}
+
+@media (max-height: 340px) {
+    #best-score>li{
+        font-size: 14px;
+    }
+    #main-content{
+        font-size: 14px;
+    }
+    h1 {
+        font-size: 18px;
+    }
+    #logo{
+        font-size: 34px;
+    } 
+    header{
+        height: 20%;
+    }
+    #main-menu{
+        font-size: 24px;
+    }
+    #leftButtid{
+        display: block ;
+    }
+    #rightButtid{
+        display: block ;
+    }
+    #jumpButtid{
+        display: block ;
     }
     
 

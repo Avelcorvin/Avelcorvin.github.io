@@ -894,22 +894,37 @@
                             screen.style.width = "100%"
                         }
                       
-
-                        console.log()
-                        document.getElementById("leftButtid").style.left = newBlockRadius / 5 * 2 + "px"
-                        document.getElementById("leftButtid").style.top = window.innerHeight - 6 * newBlockRadius + "px"
+                        document.getElementById("leftButtid").style.left ="10%"
+                        document.getElementById("leftButtid").style.top = "120%"
                         document.getElementById("leftButtid").style.width = 2 * newBlockRadius + "px";
                         document.getElementById("leftButtid").style.height = newBlockRadius * 0.8 + "px";
 
-                        document.getElementById("rightButtid").style.left = newBlockRadius * 3 + "px"
-                        document.getElementById("rightButtid").style.top = window.innerHeight - 6 * newBlockRadius + "px"
+                        document.getElementById("rightButtid").style.left = "20%"
+                        document.getElementById("rightButtid").style.top =  "120%"
                         document.getElementById("rightButtid").style.width = 2 * newBlockRadius + "px";
                         document.getElementById("rightButtid").style.height = newBlockRadius * 0.8 + "px";
 
-                        document.getElementById("jumpButtid").style.left = window.innerWidth - 2 * newBlockRadius * 4 + "px"
-                        document.getElementById("jumpButtid").style.top = window.innerHeight - 6 * newBlockRadius + "px"
+                        document.getElementById("jumpButtid").style.left = "80%"
+                        document.getElementById("jumpButtid").style.top =  "120%"
                         document.getElementById("jumpButtid").style.width = 2 * newBlockRadius + "px";
                         document.getElementById("jumpButtid").style.height = newBlockRadius * 0.8 + "px";
+
+
+
+                        // document.getElementById("leftButtid").style.left = newBlockRadius / 5 * 2 + "px"
+                        // document.getElementById("leftButtid").style.top = window.innerHeight - 6 * newBlockRadius + "px"
+                        // document.getElementById("leftButtid").style.width = 2 * newBlockRadius + "px";
+                        // document.getElementById("leftButtid").style.height = newBlockRadius * 0.8 + "px";
+
+                        // document.getElementById("rightButtid").style.left = newBlockRadius * 3 + "px"
+                        // document.getElementById("rightButtid").style.top = window.innerHeight - 6 * newBlockRadius + "px"
+                        // document.getElementById("rightButtid").style.width = 2 * newBlockRadius + "px";
+                        // document.getElementById("rightButtid").style.height = newBlockRadius * 0.8 + "px";
+
+                        // document.getElementById("jumpButtid").style.left = window.innerWidth - 2 * newBlockRadius * 4 + "px"
+                        // document.getElementById("jumpButtid").style.top = window.innerHeight - 6 * newBlockRadius + "px"
+                        // document.getElementById("jumpButtid").style.width = 2 * newBlockRadius + "px";
+                        // document.getElementById("jumpButtid").style.height = newBlockRadius * 0.8 + "px";
 
 
                         timerTablo.style.width = 2 * newBlockRadius + "px";
@@ -1038,7 +1053,7 @@
                         button.style.backgroundSize = "100% 100%"
 
                         button.style.left = left + "px";
-                        button.style.top = window.innerHeight - 4 * newBlockRadius + "px";
+                        button.style.top = "50%";
                         button.style.position = "absolute";
                         return button
 
@@ -1170,7 +1185,8 @@
                 let screen = document.getElementById("screen")// screeen
                 // screen.style.left = 2 * blockRadius + "px"
                 // screen.style.top = 2 * blockRadius + "px"
-                screen.style.width = gameScreen-50+"px";
+                // screen.style.position="absolute"
+                screen.style.width = gameScreen.width+"px";
                 screen.style.height = 7 * newBlockRadius + "px"
                 screen.style.transform = "scale(1,1)"
                 screen.style.overflow = "hidden";
