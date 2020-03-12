@@ -824,6 +824,7 @@
                         div.id = el.id;
                         div.style.width = newBlockRadius + "px";
                         div.style.height = newBlockRadius + "px";
+
                         if (el.name === "#") {
                             div.style.backgroundImage = "url(./wall.svg)"
                             div.style.backgroundSize = "cover"
@@ -888,8 +889,9 @@
                             }
                             if (el.name === "!") {
                             }
+                            //screen.style.height = 7 * newBlockRadius + "px"
                         }
-                        screen.style.height = 7 * newBlockRadius + "px"
+                      
 
                         console.log()
                         document.getElementById("leftButtid").style.left = newBlockRadius / 5 * 2 + "px"
@@ -933,12 +935,13 @@
                         countRound.style.top = 0.1 * newBlockRadius + "px";
 
                         let pl = document.getElementById("Player")
-                        pl.style.width = hash.player.width * newBlockRadius / blockRadius + "px";
-                        pl.style.height = hash.player.height * newBlockRadius / blockRadius + "px";
-                        pl.style.top = hash.player.y * newBlockRadius / blockRadius + "px"
-                        pl.style.left = hash.player.x * newBlockRadius / blockRadius + "px"
+                            pl.style.width = hash.player.width * newBlockRadius / blockRadius + "px";
+                            pl.style.height = hash.player.height * newBlockRadius / blockRadius + "px";
+                            pl.style.top = hash.player.y * newBlockRadius / blockRadius + "px"
+                            pl.style.left = hash.player.x * newBlockRadius / blockRadius + "px"
 
                     }
+                    //Ресаййз экрана
                     window.addEventListener(`resize`, event => {
                         window.client
                         console.log(blockRadius * window.innerWidth / 1920)
@@ -946,6 +949,8 @@
                         this.updateSizeWorld()
                         // some code
                     }, false);
+                   
+                   
                     this.updateSizeWorld = () => {
                         updateObjecktAfterResize(gameObjecktArray)
                     }
@@ -1030,7 +1035,6 @@
                         button.style.backgroundRepeat = "no-repeat"
                         button.style.backgroundImage = `url(${URLS[url]})`;
                         button.style.backgroundSize = "100% 100%"
-
                         button.style.left = left + "px";
                         button.style.top = window.innerHeight - 4 * newBlockRadius + "px";
                         button.style.position = "absolute";
@@ -1145,18 +1149,27 @@
                     audioInit = () => { };
                 }
 
-                let blockRadius = 50;
-                let newBlockRadius = 50;
+
+                let windowResolution=document.body.clientWidth
+                  
+
+
+                let blockRadius = 50;//const не менять
+                let newBlockRadius = 50*windowResolution/1920;
+
+
+
                 let saundtrack = new AudioClass("./song1.mp3");
                 let jumpSong = new AudioClass("./jump.mp3");
                 let pushBlock = new AudioClass("./pushblock.mp3");
                 let audioArray = [jumpSong, pushBlock]
+                
                 let wrapper = document.getElementById("game-wraper")// screeen
                 let screen = document.getElementById("screen")// screeen
                 // screen.style.left = 2 * blockRadius + "px"
                 // screen.style.top = 2 * blockRadius + "px"
-                screen.style.width = "auto";
-                screen.style.height = 7 * blockRadius + "px"
+                screen.style.width = "100%";
+                screen.style.height = 7 * newBlockRadius + "px"
                 screen.style.transform = "scale(1,1)"
                 screen.style.overflow = "hidden";
 

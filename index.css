@@ -27,6 +27,7 @@ body {
 }
 h1 {
     text-align: center;
+    font-size: 24px;
     margin: 0px;
     padding: 0px;
 }
@@ -69,7 +70,7 @@ ul{
 #main-content-center{
     position: relative;
     left: 25%;
-    width: 75%;
+     width: 75%;
     text-align: left;
 }
 #Write{
@@ -98,4 +99,27 @@ ul{
     position: relative;
     border: solid black 5px;
     background-color: rgb(202, 230, 238);
+}
+
+@media (max-width: 640px) {
+    #best-score>li{
+        font-size: 14px;
+    }
+    #main-content{
+        font-size: 14px;
+    }
+    h1 {
+        font-size: 18px;
+    }
+    #logo{
+        font-size: 34px;
+    } 
+    header{
+        height: 10%;
+    }
+    #main-menu{
+        font-size: 24px;
+    }
+    
+
 }
