@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet"  type="text/css"  href="./index.css">
+    <link rel="stylesheet" type="text/css" href="./index.css">
     <!-- <link rel="stylesheet"  type="text/css"  href="/index.css"> -->
     <title>Document</title>
 </head>
@@ -30,74 +30,95 @@
 
 
     <script>
-         var RAF=
-        // находим, какой метод доступен
-        window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        // ни один не доступен
-        // будем работать просто по таймеру
-        function(callback)
-            { window.setTimeout(callback, 1000 / 60); }
+
+        var RAF =
+            // находим, какой метод доступен
+            window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            // ни один не доступен
+            // будем работать просто по таймеру
+            function (callback) { window.setTimeout(callback, 1000 / 60); }
 
 
 
-        window.addEventListener("hashchange", swithcUrlHash, false)
-        window.addEventListener("beforeunload", () => { alert("вы покидаете страницу") }, false)
 
 
+        let pasword = Math.random()
         let SPAState = { pagename: "Main" }
         let modelState = "";
         let ajaxHandlerScript = "https://fe.it-academy.by/AjaxStringStorage2.php";
-        let gameScreen=screen;
-
-        let scoredata=""
-
+        let gameScreen = screen;
+        let scoredata = ""
+      
         function swithcUrlHash(EO) {
-                EO = EO || window.event
+            EO = EO || window.event
+            let URLHash = window.location.hash;
+            let URLHahsAfterAnchor = URLHash.substr(1)
 
-                let URLHash = window.location.hash;
-                let URLHahsAfterAnchor = URLHash.substr(1)
 
-                if(SPAState.pagename==="Newgame"&&URLHahsAfterAnchor!=="Score") {
-                    let isEndGame=confirm("Если вы покинете игру прогресс будет утерян")
-                        if(!isEndGame) return;
-        }
-                if (URLHahsAfterAnchor != "") {
-                    SPAState = { pagename: URLHahsAfterAnchor }
+            function touchstart(EO) {
+                EO = EO || window.event;
+                let start = EO.changedTouches[0].clientY
+                // console.log(EO.changedTouches[0].clientY)
+
+                window.addEventListener("touchend", touchEnd, false)
+
+                function touchEnd(EO) {
+                    EO = EO || window.event;
+                    let end = EO.changedTouches[0].clientY
+                    // console.log(EO.changedTouches[0].clientY)
+                    // console.log(end - start)
+                    // console.log((end - start) / gameScreen.height)
+                    if((end-start)/gameScreen.height<-0.6)switchToMainPage() 
+
                 }
-                else SPAState = { pagename: "Main" }
-                
-                function drawPage(arr){
-                                   
-                    scoredata = ` <ul id="best-score">`
-                                       for (prop in arr){
-                                        scoredata += `<li>${prop}:${arr[prop]}</li>`
-                                   }
-                    scoredata += `   <li>
+            }
+            window.addEventListener("touchstart", touchstart, false)
+            window.addEventListener("hashchange", swithcUrlHash, false)
+            window.addEventListener("beforeunload", () => { alert("вы покидаете страницу") }, false)
+
+            
+
+            if (SPAState.pagename === "Newgame" && URLHahsAfterAnchor !== "Score") {
+                let isEndGame = confirm("Если вы покинете игру прогресс будет утерян")
+                if (!isEndGame) return;
+            }
+            if (URLHahsAfterAnchor != "") {
+                SPAState = { pagename: URLHahsAfterAnchor }
+            }
+            else SPAState = { pagename: "Main" }
+
+            function drawPage(arr) {
+
+                scoredata = ` <ul id="best-score">`
+                for (prop in arr) {
+                    scoredata += `<li>${prop}:${arr[prop]}</li>`
+                }
+                scoredata += `   <li>
                                                        <a href="#Main">Вернуться в  главное меню</a> 
                                                    </li>
                                                </ul>
                                            </div>`
-                               }
+            }
 
-                let sp = new URLSearchParams();
-                        sp.append('f', 'READ');
-                        sp.append('n', 'KORBAN_DATA_TEST2');
+            let sp = new URLSearchParams();
+            sp.append('f', 'READ');
+            sp.append('n', 'KORBAN_DATA_TEST2');
 
-                        fetch(ajaxHandlerScript, { method: 'post', body: sp })
-                            .then(response => response.json())
-                            .then(data =>data=JSON.parse(data.result))
-                            .then(
-                                data=>{drawPage(data)})
-                            .catch(error => { console.error(error); });
-
-
+            fetch(ajaxHandlerScript, { method: 'post', body: sp })
+                .then(response => response.json())
+                .then(data => data = JSON.parse(data.result))
+                .then(
+                    data => { drawPage(data) })
+                .catch(error => { console.error(error); });
 
 
-                let pageHTML = `
+
+
+            let pageHTML = `
                 <header>  <span id="logo">МариоАрти</span> </header>
                                 <div id="root-nav">
                                     <input type="button" id="main" value="Главная Страница" onclick="switchToMainPage()"/>
@@ -107,11 +128,11 @@
                                     <input type="button" id="main" value="Лучшие игроки" onclick="switchToBest_players()"/>
                                 <div/>`
 
-                    ;
+                ;
 
-                switch (SPAState.pagename) {
-                    case 'Main':
-                     pageHTML = `
+            switch (SPAState.pagename) {
+                case 'Main':
+                    pageHTML = `
                      <header>  <span id="logo">МариоАрти</span> </header>
                                     <div id="main-menu">
                                         <ul>
@@ -121,10 +142,10 @@
                                             <li><a href="#About">О нас</a></li>
                                         </ul>
                                     </div>`
-                        break;
-                    
-                    case 'Roole':
-                        pageHTML = `
+                    break;
+
+                case 'Roole':
+                    pageHTML = `
                         <header>  <span id="logo">МариоАрти</span> </header>
                                     <div id="main-content">
                                         <h1>Правила игры</h1> 
@@ -137,10 +158,10 @@
                                          <p/><a href="#Main">Вернуться в  главное меню</a>
                                          </div>
                                     </div>`
-                       
-                        break;
 
-                    case 'About':
+                    break;
+
+                case 'About':
                     pageHTML = `
                     <header>  <span id="logo">МариоАрти</span> </header>
                                     <div id="main-content">
@@ -151,76 +172,82 @@
                                          <p/>
                                          <a href="#Main">Вернуться в  главное меню</a>
                                     </div>`
-                        break;
+                    break;
 
-                    case 'Newgame':
-                        pageHTML = `
+                case 'Newgame':
+                    pageHTML = `
                             <div id="root-nav">
                                  <input type="button" id="newGmae" value="Выйти из Игры" onclick="switchToMainPage()"/>
                             <div/>
                                 <div id="game-wraper">
                                     <div id="screen"></div>
                                 </div>`
-                        break;
-                    case 'Score':
-                        pageHTML = `<header>  <span id="logo">МариоАрти</span> </header>
+                    break;
+                case 'Score':
+                    pageHTML = `<header>  <span id="logo">МариоАрти</span> </header>
                                     <div id="main-content">
                                         <div id="main-content-center">`
-                        
-                        pageHTML += "<h3>О да вы молодец </h3>";
-                        pageHTML += `<p>Ваш результат ${modelState}`;
-                        pageHTML += `<p>Может вы желаете внести результат в книгу чемпионов? `
-                        pageHTML += ` <br/><input type="text" id="username" value="имя игрока" >`
-                        pageHTML += ` <input type="button" id="Write" value="Записать" onclick="writeDataKorban()">`
-                        pageHTML += `<p/><a href="#Main">Вернуться в  главное меню</a> 
+
+                    pageHTML += "<h3>О да вы молодец </h3>";
+                    pageHTML += `<p>Ваш результат ${modelState}`;
+                    pageHTML += `<p>Может вы желаете внести результат в книгу чемпионов? `
+                    pageHTML += ` <br/><input type="text" id="username" value="имя игрока" >`
+                    pageHTML += ` <input type="button" id="Write" value="Записать" onclick="writeDataKorban()">`
+                    pageHTML += `<p/><a href="#Main">Вернуться в  главное меню</a> 
                         <div id="main-content-center"></div> </div>  `;
-                        break;
+                    break;
 
 
-                    case 'best_players':
-                    
+                case 'best_players':
+
+                    pageHTML = `<header>  <span id="logo">МариоАрти</span> </header>
+                                        <div id="main-content">
+                                            <h1>Лучшие резултаты </h1>`
+                    pageHTML += scoredata;
+
+                    function drawPage(arr) {
                         pageHTML = `<header>  <span id="logo">МариоАрти</span> </header>
                                         <div id="main-content">
                                             <h1>Лучшие резултаты </h1>`
-                        pageHTML+=scoredata;
-                        
-                        function drawPage(arr){
-                            pageHTML = `<header>  <span id="logo">МариоАрти</span> </header>
-                                        <div id="main-content">
-                                            <h1>Лучшие резултаты </h1>`
-                                   
-                                pageHTML += ` <ul id="best-score">`
-                                    for (prop in arr){
-                                    pageHTML += `<li>${prop}:${arr[prop]}</li>`
-                                }
-                                pageHTML += `   <li>
+
+                        pageHTML += ` <ul id="best-score">`
+                        for (prop in arr) {
+                            pageHTML += `<li>${prop}:${arr[prop]}</li>`
+                        }
+                        pageHTML += `   <li>
                                                     <a href="#Main">Вернуться в  главное меню</a> 
                                                 </li>
                                             </ul>
                                         </div>`
-                            }
+                    }
 
-                        
-                        let sp = new URLSearchParams();
-                        sp.append('f', 'READ');
-                        sp.append('n', 'KORBAN_DATA_TEST2');
 
-                        fetch(ajaxHandlerScript, { method: 'post', body: sp })
-                            .then(response => response.json())
-                            .then(data =>data=JSON.parse(data.result))
-                            .then(
-                                data=>{drawPage(data)
-                                    document.getElementById("root").innerHTML = pageHTML})
-                            .catch(error => { console.error(error); });
+                    let sp = new URLSearchParams();
+                    sp.append('f', 'READ');
+                    sp.append('n', 'KORBAN_DATA_TEST2');
 
-                         break;
+                    fetch(ajaxHandlerScript, { method: 'post', body: sp })
+                        .then(response => response.json())
+                        .then(data => data = JSON.parse(data.result))
+                        .then(
+                            data => {
+                                drawPage(data)
+                                document.getElementById("root").innerHTML = pageHTML
+                            })
+                        .catch(error => { console.error(error); });
 
-                }
-                document.getElementById("root").innerHTML = pageHTML;
-                /*
+                    break;
 
-       */
-       if(SPAState.pagename==="Newgame"){
+            }
+            document.getElementById("root").innerHTML = pageHTML;
+            /*
+
+   */
+            if (SPAState.pagename === "Newgame") {
+
+
+
+
                 /*
                *---------------------------------------Controller------------------------------    
                */
@@ -255,7 +282,7 @@
                         EO = EO || window.event;
 
                     }
-            
+
 
 
                     window.addEventListener("keydown", keyDown, false)
@@ -280,32 +307,6 @@
                         .then(el => { viev.buttons.jumpBut.ontouchend = () => { keyup(null, " ") } })
 
 
-
-                    //жесты
-
-                    function touchstart(EO) {
-                        EO = EO || window.event;
-                        let start=EO.changedTouches[0].clientX
-                        console.log(EO.changedTouches[0].clientX)
-
-                        window.addEventListener("touchend", touchEnd, false)
-
-                        function touchEnd(EO) {
-                            EO = EO || window.event;
-                            let end=EO.changedTouches[0].clientX
-                            console.log(EO.changedTouches[0].clientX)
-                            console.log(end-start)
-                            console.log((end-start)/gameScreen.width  )
-                            if((end-start)/gameScreen.width>0.75)history.go(1)
-                            if((end-start)/gameScreen.width<-0.75)history.go(-1)
-                        }
-                    }
-
-                    window.addEventListener("touchstart", touchstart, false)
-
-
-
-
                 }
 
                 /*
@@ -316,13 +317,13 @@
                     let viev = null;
                     let field = null;
                     let map = [     //1,  2,  3  ,4  ,5  ,6  ,7  ,8   ,9   10,  11  ,12  ,13  ,14  ,15 , 16
-                        ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "," ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//1   x0,y0
-                        ["#", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "," ", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//2   x0,y0+n*s1
+                        ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//1   x0,y0
+                        ["#", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", "#", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "!"],//2   x0,y0+n*s1
                         ["#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//3
                         ["#", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//4
-                        ["#", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " "," ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ",  "!"],//5
-                        ["#", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ",  " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ","!"],//6
-                        ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#","#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#","#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#","#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#","#", "#"],//7
+                        ["#", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", "!"],//5
+                        ["#", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "#", " ", " ", " ", " ", " ", " ", " ", " ", " ", "2", " ", " ", " ", " ", "#", " ", " ", "2", " ", " ", " ", " ", " ", " ", " ", "!"],//6
+                        ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"],//7
                     ]
 
                     let map2 = [     //1,  2,  3  ,4  ,5  ,6  ,7  ,8   ,9   10,  11  ,12  ,13  ,14  ,15 , 16
@@ -396,7 +397,7 @@
                         setTimeout(viev.update, 1000);
                         if (!hash.player.life) endGame()
                     }
-                    function winRound(arr) {// 
+                    function winRound(arr) {// Срабатывает при достижении красных блоков
 
                         let result = false;
                         for (let j = 0; j < arr.length; j++) {
@@ -435,8 +436,8 @@
                     }
                     function endGame() {
                         hash.roundIsEnd = true,
-                        modelState=hash.player.score;
-                            switchToScore()
+                            modelState = hash.player.score;
+                        switchToScore()
                     }
                     function newRound() {//запускает новый раунд
 
@@ -444,7 +445,7 @@
                         hash.gameTime.startTimer();
 
 
-                        
+
 
                         // console.log(wall)
 
@@ -830,7 +831,6 @@
                         div.style.left = hash.player.y * blockRadius / 50 + "px"
                         div.id = "Player";
                         div.style.zIndex = 0;
-                        div.style.border = "solid black 1px"
                         div.style.backgroundSize = "300% 100%"
                         div.style.backgroundPositionX = "-0px"
                         div.style.transform = "translateZ(0)"
@@ -858,9 +858,8 @@
                         }
                         if (el.name === "2") {
                             div.style.backgroundImage = "url(./duck2.svg)"
-                            div.className="monstr"
+                            div.className = "monstr"
                             div.style.zIndex = 0;
-                            div.style.border = "solid black 1px"
                             div.style.backgroundSize = `${1150}% ${780}%`
                             div.style.backgroundPositionX = "-100px"
                             div.style.transform = "translateZ(0)"
@@ -916,19 +915,19 @@
                             screen.style.height = 7 * newBlockRadius + "px"
                             screen.style.width = "100%"
                         }
-                      
-                        document.getElementById("leftButtid").style.left ="10%"
+
+                        document.getElementById("leftButtid").style.left = "10%"
                         document.getElementById("leftButtid").style.top = "120%"
                         document.getElementById("leftButtid").style.width = 2 * newBlockRadius + "px";
                         document.getElementById("leftButtid").style.height = newBlockRadius * 0.8 + "px";
 
                         document.getElementById("rightButtid").style.left = "20%"
-                        document.getElementById("rightButtid").style.top =  "120%"
+                        document.getElementById("rightButtid").style.top = "120%"
                         document.getElementById("rightButtid").style.width = 2 * newBlockRadius + "px";
                         document.getElementById("rightButtid").style.height = newBlockRadius * 0.8 + "px";
 
                         document.getElementById("jumpButtid").style.left = "80%"
-                        document.getElementById("jumpButtid").style.top =  "120%"
+                        document.getElementById("jumpButtid").style.top = "120%"
                         document.getElementById("jumpButtid").style.width = 2 * newBlockRadius + "px";
                         document.getElementById("jumpButtid").style.height = newBlockRadius * 0.8 + "px";
 
@@ -975,10 +974,10 @@
                         countRound.style.top = 0.1 * newBlockRadius + "px";
 
                         let pl = document.getElementById("Player")
-                            pl.style.width = hash.player.width * newBlockRadius / blockRadius + "px";
-                            pl.style.height = hash.player.height * newBlockRadius / blockRadius + "px";
-                            pl.style.top = hash.player.y * newBlockRadius / blockRadius + "px"
-                            pl.style.left = hash.player.x * newBlockRadius / blockRadius + "px"
+                        pl.style.width = hash.player.width * newBlockRadius / blockRadius + "px";
+                        pl.style.height = hash.player.height * newBlockRadius / blockRadius + "px";
+                        pl.style.top = hash.player.y * newBlockRadius / blockRadius + "px"
+                        pl.style.left = hash.player.x * newBlockRadius / blockRadius + "px"
 
                     }
                     //Ресаййз экрана
@@ -988,8 +987,8 @@
                         this.updateSizeWorld()
                         // some code
                     }, false);
-                   
-                   
+
+
                     this.updateSizeWorld = () => {
                         updateObjecktAfterResize(gameObjecktArray)
                     }
@@ -1099,13 +1098,13 @@
                     }
 
                     let wrapper = document.getElementById("game-wraper")
-                            wrapper.appendChild(this.buttons.leftBut)
-                            wrapper.appendChild(this.buttons.rightBut)
-                            wrapper.appendChild(this.buttons.jumpBut)
-                            wrapper.appendChild(timerTablo)
-                            wrapper.appendChild(lifeTablo)
-                            wrapper.appendChild(scoreTablo)
-                            wrapper.appendChild(countRound)
+                    wrapper.appendChild(this.buttons.leftBut)
+                    wrapper.appendChild(this.buttons.rightBut)
+                    wrapper.appendChild(this.buttons.jumpBut)
+                    wrapper.appendChild(timerTablo)
+                    wrapper.appendChild(lifeTablo)
+                    wrapper.appendChild(scoreTablo)
+                    wrapper.appendChild(countRound)
                     updateTimeScoreLife(100, 100, 100, 3)
 
                     this.update = () => {
@@ -1131,18 +1130,18 @@
                     }
 
                     this.newRound = (blockGrid, enemuGrid) => {
-                        
+
                         let screeen = document.getElementById("screen");
-                        let wall=document.getElementsByClassName("wall");
-                        let monstr=document.getElementsByClassName("monstr");
-                        let finish=document.getElementsByClassName("Finish");
-                        for(let i=wall.length-1;i>=0;i--){
+                        let wall = document.getElementsByClassName("wall");
+                        let monstr = document.getElementsByClassName("monstr");
+                        let finish = document.getElementsByClassName("Finish");
+                        for (let i = wall.length - 1; i >= 0; i--) {
                             screeen.removeChild(wall[i])
                         }
-                        for(let i=monstr.length-1;i>=0;i--){
+                        for (let i = monstr.length - 1; i >= 0; i--) {
                             screeen.removeChild(monstr[i])
                         }
-                        for(let i=finish.length-1;i>=0;i--){
+                        for (let i = finish.length - 1; i >= 0; i--) {
                             screeen.removeChild(finish[i])
                         }
                         drawblockGrid(blockGrid, screen)
@@ -1154,7 +1153,7 @@
                  --------------------------------- Audio--------------------------------------
                 */
 
-              function AudioClass(a) {
+                function AudioClass(a) {
                     let audio = new Audio()
                     audio.src = a;
                     return audio;
@@ -1190,12 +1189,12 @@
                 }
 
                 console.log(gameScreen)
-             
-                  
+
+
 
 
                 let blockRadius = 50;//const не менять
-                let newBlockRadius = blockRadius*gameScreen.width/1920;
+                let newBlockRadius = blockRadius * gameScreen.width / 1920;
 
 
 
@@ -1203,13 +1202,13 @@
                 let jumpSong = new AudioClass("./jump.mp3");
                 let pushBlock = new AudioClass("./pushblock.mp3");
                 let audioArray = [jumpSong, pushBlock]
-                
+
                 let wrapper = document.getElementById("game-wraper")// screeen
                 let screen = document.getElementById("screen")// screeen
                 // screen.style.left = 2 * blockRadius + "px"
                 // screen.style.top = 2 * blockRadius + "px"
                 // screen.style.position="absolute"
-                screen.style.width = gameScreen.width+"px";
+                screen.style.width = gameScreen.width + "px";
                 screen.style.height = 7 * newBlockRadius + "px"
                 screen.style.transform = "scale(1,1)"
                 screen.style.overflow = "hidden";
@@ -1217,7 +1216,7 @@
 
                 let model = new MainModel()
                 let viev = new MainViev();
-                    modelState = model.hash.player.score;
+                modelState = model.hash.player.score;
                 viev.updateSizeWorld()
 
                 let controller = new MainController();
@@ -1228,11 +1227,9 @@
             }
 
         }
-
-
         function switchToState(newState) {
             let stateStr = newState.pagename;
-                location.hash = stateStr;
+            location.hash = stateStr;
         }
         function switchToMainPage() {
             switchToState({ pagename: 'Main' });
@@ -1252,15 +1249,11 @@
         function switchToScore() {
             switchToState({ pagename: 'Score' });
         }
-        function readDataKorban(){
-                   
-                         }
-         
+        function readDataKorban() {
 
+        }
+        function writeDataKorban() {
 
-        let pasword=Math.random()                 
-        function writeDataKorban(){
-           
             /*1 Беру имя из переменной userName
               2  Очки я беру из modelState создаю хеш {userName:modelState};
               3  Беру строку из KORBAN_DATA_USERNAMES_AND_SCORES
@@ -1271,47 +1264,47 @@
                     p=пароль
               5 получаю data применяю JSON.parse
               6 записваю в data нового юзера с цифрами или обновляюс старого
-            */ 
-          
-           let userName = document.getElementById("username").value
- 
-                        let sp = new URLSearchParams();
-                        sp.append('f', 'LOCKGET');
-                        sp.append('n', 'KORBAN_DATA_TEST2');
-                        sp.append('p', pasword);
+            */
 
-                        fetch(ajaxHandlerScript, { method: 'post', body: sp })
-                            .then(response => response.json())
-                            .then(data =>{
-                                    
-                                let ans=JSON.parse(data.result)
-                                    ans[userName]=modelState;
-                                    data=JSON.stringify(ans)
-                                    return data
-                            })
-                            .then(data=>{ 
-                      
-                                let sp = new URLSearchParams();
-                                    sp.append('f', 'UPDATE');
-                                    sp.append('n', 'KORBAN_DATA_TEST2');
-                                    sp.append('p', pasword);
-                                    sp.append('v', data);
-                                
-                                return fetch(ajaxHandlerScript, { method: 'post', body: sp })
-                            })    
-                            .then(response => response.json())
-                            .then(data => {console.log(data);})
-                            .then(data =>switchToBest_players())
-                            .catch(error => { console.error(error); });
-                            
-                         }
+            let userName = document.getElementById("username").value
+
+            let sp = new URLSearchParams();
+            sp.append('f', 'LOCKGET');
+            sp.append('n', 'KORBAN_DATA_TEST2');
+            sp.append('p', pasword);
+
+            fetch(ajaxHandlerScript, { method: 'post', body: sp })
+                .then(response => response.json())
+                .then(data => {
+
+                    let ans = JSON.parse(data.result)
+                    ans[userName] = modelState;
+                    data = JSON.stringify(ans)
+                    return data
+                })
+                .then(data => {
+
+                    let sp = new URLSearchParams();
+                    sp.append('f', 'UPDATE');
+                    sp.append('n', 'KORBAN_DATA_TEST2');
+                    sp.append('p', pasword);
+                    sp.append('v', data);
+
+                    return fetch(ajaxHandlerScript, { method: 'post', body: sp })
+                })
+                .then(response => response.json())
+                .then(data => { console.log(data); })
+                .then(data => switchToBest_players())
+                .catch(error => { console.error(error); });
+
+        }
         swithcUrlHash()
 
 
 
 
 
-   
+
 
 
     </script>

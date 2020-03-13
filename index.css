@@ -99,6 +99,7 @@ ul{
     position: relative;
     border: solid black 5px;
     background-color: rgb(202, 230, 238);
+    transform: translateZ(0);
 }
 #leftButtid{
     display: none;
@@ -108,6 +109,9 @@ ul{
 }
 #jumpButtid{
     display: none;
+}
+#screen{
+    transform: translateZ(0);
 }
 
 @media (max-width: 1366px) {
