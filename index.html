@@ -52,6 +52,14 @@
         let ajaxHandlerScript = "https://fe.it-academy.by/AjaxStringStorage2.php";
         let gameScreen = screen;
         let scoredata = ""
+
+
+
+        function touch(EO) {
+                        EO = EO || window.event;
+                        EO.preventDefault()
+                    }
+                    window.addEventListener("touchmove", touch, { passive: false })
       
         function swithcUrlHash(EO) {
             EO = EO || window.event
